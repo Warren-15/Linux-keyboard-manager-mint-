@@ -247,12 +247,6 @@ SOFTWARE.
 - **ISO 105** - The keyboard layout standard this editor is based on
 - **All contributors** - For testing, feedback, and improvements
 
-## 📞 Support
-
-- **Issues**: [GitHub Issues](https://github.com/yourusername/keyboard-layout-editor/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/keyboard-layout-editor/discussions)
-- **Email**: mr.dabbabi@gmail.com
-
 ---
 
 **Built with ❤️ for the Linux community**
