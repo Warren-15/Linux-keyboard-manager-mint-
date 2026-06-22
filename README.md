@@ -10,13 +10,13 @@ A professional web-based editor for creating and customizing ISO 105 keyboard la
 
 ## 📸 Screenshots
 
-| Editor View | Keyboard Manager | Layout Options |
+| Editor View | Keyboard Manager | Input Sources |
 |-------------|------------------|----------------|
-| ![Editor](Screens/keys_editor.png) | ![Manager](Screens/manager.png) | ![Options](Screens/options.png) |
+| ![Editor](Screens/Emojis.png) | ![Manager](Screens/main.png) | ![Input Sources](Screens/input_sources.png) |
 
 | Phonkeys Layout | Emoji Layout | Symbol Layout |
 |-----------------|--------------|---------------|
-| ![Phonkeys](Screens/phnkeys.png) | ![Emojis](Screens/emojis.png) | ![Symbols](Screens/symbols.png) |
+| ![Phonkeys](Screens/phonkeys.png) | ![Emojis](Screens/Emojis.png) | ![Symbols](Screens/Symbols.png) |
 
 ## ✨ Features
 
