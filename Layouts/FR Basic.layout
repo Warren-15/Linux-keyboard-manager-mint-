@@ -1,0 +1,86 @@
+# ================================================================
+# Layout Definition File for fr.layout
+# ================================================================
+
+# ⚙️ BASIC INFO
+INPUT_SOURCE_NAME="French (fr) "
+SHORT_NAME="fr"
+LANGUAGE_CODE="fr"
+COUNTRY_CODE="FR"
+FLAG="🇫🇷"
+
+    // First row - Numbers and symbols
+    // Standard:    ² & é " apostrophe ( - è _ ç à ) =
+    // Shift:       ~ 1 2 3 4 5 6 7 8 9 0 ° +
+    // AltGr:       ¬ ¹ ~ # { [ | grave \ ^ @ ] }
+    // AltGr+Shift: ¬ ¡ ⅛ £ $ ⅜ ⅝ ⅞ ™ ± ° ¿ ﹜
+
+    key <TLDE> { [ twosuperior   , asciitilde    , notsign       , notsign ] };// ² ~ ¬ ¬
+    key <AE01> { [ ampersand     , 1             , onesuperior   , exclamdown ] };// & 1 ¹ ¡
+    key <AE02> { [ eacute        , 2             , asciitilde    , oneeighth ] };// é 2 ~ ⅛
+    key <AE03> { [ quotedbl      , 3             , numbersign    , sterling ] };// " 3 # £
+    key <AE04> { [ apostrophe    , 4             , braceleft     , dollar ] };// apostrophe 4 { $
+    key <AE05> { [ parenleft     , 5             , bracketleft   , threeeighths ] };// ( 5 [ ⅜
+    key <AE06> { [ minus         , 6             , bar           , fiveeighths ] };// - 6 | ⅝
+    key <AE07> { [ egrave        , 7             , grave         , seveneighths ] };// è 7 grave ⅞
+    key <AE08> { [ underscore    , 8             , backslash     , trademark ] };// _ 8 \ ™
+    key <AE09> { [ ccedilla      , 9             , asciicircum   , plusminus ] };// ç 9 ^ ±
+    key <AE10> { [ agrave        , 0             , at            , degree ] };// à 0 @ °
+    key <AE11> { [ parenright    , degree        , bracketright  , questiondown ] };// ) ° ] ¿
+    key <AE12> { [ equal         , plus          , braceright    , dead_ogonek ] };// = + } ﹜
+
+    // Second row - QWERTY (with Enter)
+    // Standard:    a z e               ﹒ $
+    // Shift:       A Z E               ﹗ £
+    // AltGr:       æ « €               ﹗ ¤
+    // AltGr+Shift: Æ < ¢               ﹘ ﹔
+
+    key <AD01> { [ a             , A             , ae            , AE ] };  // a A æ Æ
+    key <AD02> { [ z             , Z             , guillemotleft , less ] };// z Z « <
+    key <AD03> { [ e             , E             , EuroSign      , cent ] };// e E € ¢
+    key <AD11> { [ dead_circumflex, dead_diaeresis, dead_diaeresis, dead_abovering ] };// ﹒ ﹗ ﹗ ﹘
+    key <AD12> { [ dollar        , sterling      , currency      , dead_macron ] };// $ £ ¤ ﹔
+
+    // Third row - ASDF (with CapsLock)
+    // Standard:    q                 m ù *
+    // Shift:       Q                 M % µ
+    // AltGr:       @                 µ ﹒ ﹐
+    // AltGr+Shift: Ω                 º ﹚ ﹕
+
+    key <AC01> { [ q             , Q             , at            , Greek_OMEGA ] };// q Q @ Ω
+    key <AC10> { [ m             , M             , mu            , masculine ] };// m M µ º
+    key <AC11> { [ ugrave        , percent       , dead_circumflex, dead_caron ] };// ù % ﹒ ﹚
+    key <BKSL> { [ asterisk      , mu            , dead_grave    , dead_breve ] };// * µ ﹐ ﹕
+
+    // Fourth row - ZXCV (with Shift)
+    // Standard:    w           , ; : !
+    // Shift:       W           ? . / §
+    // AltGr:       ł           ﹑ • · ﹠
+    // AltGr+Shift: Ł           ﹙ × ÷ ﹖
+
+    key <AB01> { [ w             , W             , lstroke       , Lstroke ] };// w W ł Ł
+    key <AB07> { [ comma         , question      , dead_acute    , dead_doubleacute ] };// , ? ﹑ ﹙
+    key <AB08> { [ semicolon     , period        , U2022         , multiply ] };// ; . • ×
+    key <AB09> { [ colon         , slash         , periodcentered, division ] };// : / · ÷
+    key <AB10> { [ exclam        , section       , dead_belowdot , dead_abovedot ] };// ! § ﹠ ﹖
+
+    // Fifth row - Bottom (Ctrl, Win, Alt, Space, AltGr, Menu)
+    // Standard:    
+    // Shift:       
+    // AltGr:       
+    // AltGr+Shift: 
+
+
+    // Arrow keys
+    // Standard:    
+    // Shift:       
+    // AltGr:       
+    // AltGr+Shift: 
+
+
+    // Numpad
+    // Standard:    
+    // Shift:       
+    // AltGr:       
+    // AltGr+Shift: 
+

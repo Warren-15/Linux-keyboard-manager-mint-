@@ -1,0 +1,107 @@
+# ================================================================
+# Layout Definition File for ar.layout
+# ================================================================
+
+# ⚙️ BASIC INFO
+INPUT_SOURCE_NAME="Arabic Basic (ar) "
+SHORT_NAME="ar"
+LANGUAGE_CODE="ar"
+COUNTRY_CODE="SA"
+FLAG="🇸🇦"
+
+    // First row - Numbers and symbols
+    // Standard:    ذ 1 2 3 4 5 6 7 8 9 0 - =
+    // Shift:       ّ ! @ # $ % ^ & * ) ( _ +
+    // AltGr:       ٪ ١ ٢ ٣ ٤ ٥ ٦ ٧ ٨ ٩ ٠ – ≠
+    // AltGr+Shift: ؉ any any any any ‰ any any any any any ‑ ≈
+
+    key <TLDE> { [ Arabic_thal   , Arabic_shadda , Arabic_percent, U0609 ] };// ذ ّ ٪ ؉
+    key <AE01> { [ 1             , exclam        , Arabic_1      , U0061 ] };// 1 ! ١ any
+    key <AE02> { [ 2             , at            , Arabic_2      , U0061 ] };// 2 @ ٢ any
+    key <AE03> { [ 3             , numbersign    , Arabic_3      , U0061 ] };// 3 # ٣ any
+    key <AE04> { [ 4             , dollar        , Arabic_4      , U0061 ] };// 4 $ ٤ any
+    key <AE05> { [ 5             , percent       , Arabic_5      , permille ] };// 5 % ٥ ‰
+    key <AE06> { [ 6             , asciicircum   , Arabic_6      , U0061 ] };// 6 ^ ٦ any
+    key <AE07> { [ 7             , ampersand     , Arabic_7      , U0061 ] };// 7 & ٧ any
+    key <AE08> { [ 8             , asterisk      , Arabic_8      , U0061 ] };// 8 * ٨ any
+    key <AE09> { [ 9             , parenright    , Arabic_9      , U0061 ] };// 9 ) ٩ any
+    key <AE10> { [ 0             , parenleft     , Arabic_0      , U0061 ] };// 0 ( ٠ any
+    key <AE11> { [ minus         , underscore    , endash        , U2011 ] };// - _ – ‑
+    key <AE12> { [ equal         , plus          , notequal      , U2248 ] };// = + ≠ ≈
+
+    // Second row - QWERTY (with Enter)
+    // Standard:    ض ص ث ق ف غ ع ه خ ح ج د
+    // Shift:       َ ً ُ ٌ ﻹ إ grave ÷ × ؛ < >
+    // AltGr:       any any any any Arabic_veh any any any any any چ any
+    // AltGr+Shift: ⁦ ⁧ ⁨ ⁩ any ‪ ‫ ‬ any ‎ ‏ ؜
+
+    key <AD01> { [ Arabic_dad    , Arabic_fatha  , U0061         , U2066 ] };// ض َ any ⁦
+    key <AD02> { [ Arabic_sad    , Arabic_fathatan, U0061         , U2067 ] };// ص ً any ⁧
+    key <AD03> { [ Arabic_theh   , Arabic_damma  , U0061         , U2068 ] };// ث ُ any ⁨
+    key <AD04> { [ Arabic_qaf    , Arabic_dammatan, U0061         , U2069 ] };// ق ٌ any ⁩
+    key <AD05> { [ Arabic_feh    , Pointer_EnableKeys, Arabic_veh    , U0061 ] };// ف ﻹ Arabic_veh any
+    key <AD06> { [ Arabic_ghain  , Arabic_hamzaunderalef, U0061         , U202A ] };// غ إ any ‪
+    key <AD07> { [ Arabic_ain    , grave         , U0061         , U202B ] };// ع grave any ‫
+    key <AD08> { [ Arabic_ha     , division      , U0061         , U202C ] };// ه ÷ any ‬
+    key <AD09> { [ Arabic_khah   , multiply      , U0061         , U0061 ] };// خ × any any
+    key <AD10> { [ Arabic_hah    , Arabic_semicolon, U0061         , U200E ] };// ح ؛ any ‎
+    key <AD11> { [ Arabic_jeem   , less          , Arabic_tcheh  , U200F ] };// ج < چ ‏
+    key <AD12> { [ Arabic_dal    , greater       , U0061         , U061C ] };// د > any ؜
+
+    // Third row - ASDF (with CapsLock)
+    // Standard:    ش س ي ب ل ا ت ن م ك ط \
+    // Shift:       ِ ٍ ] [ ﻷ أ ـ ، / : " |
+    // AltGr:       any any any پ any ٱ any ٫ any Arabic_gaf ⟩ ⟨
+    // AltGr+Shift: any any any any any any any any any any ‍
+
+    key <AC01> { [ Arabic_sheen  , Arabic_kasra  , U0061         , U0061 ] };// ش ِ any any
+    key <AC02> { [ Arabic_seen   , Arabic_kasratan, U0061         , U0061 ] };// س ٍ any any
+    key <AC03> { [ Arabic_yeh    , bracketright  , U0061         , U0061 ] };// ي ] any any
+    key <AC04> { [ Arabic_beh    , bracketleft   , Arabic_peh    , U0061 ] };// ب [ پ any
+    key <AC05> { [ Arabic_lam    , Pointer_Drag3 , U0061         , U0061 ] };// ل ﻷ any any
+    key <AC06> { [ Arabic_alef   , Arabic_hamzaonalef, U0671         , U0061 ] };// ا أ ٱ any
+    key <AC07> { [ Arabic_teh    , Arabic_tatweel, U0061         , U0061 ] };// ت ـ any any
+    key <AC08> { [ Arabic_noon   , Arabic_comma  , U066B         , U0061 ] };// ن ، ٫ any
+    key <AC09> { [ Arabic_meem   , slash         , U0061         , U0061 ] };// م / any any
+    key <AC10> { [ Arabic_kaf    , colon         , Arabic_gaf    , U0061 ] };// ك : Arabic_gaf any
+    key <AC11> { [ Arabic_tah    , quotedbl      , U27E9         , U200D ] };// ط " ⟩ ‍
+    key <BKSL> { [ backslash     , bar           , U27E8         , U202F ] };// \ | ⟨  
+
+    // Fourth row - ZXCV (with Shift)
+    // Standard:    | ئ ء ؤ ر ﻻ ى ة و ز ظ
+    // Shift:       … ~ ْ } { ﻵ آ apostrophe , . ؟
+    // AltGr:       ¦ » « any any any ٰ any ٬ ژ ٭
+    // AltGr+Shift: any › ‹ any any any any any any any ‌
+
+    key <LSGT> { [ bar           , ellipsis      , brokenbar     , U0061 ] };// | … ¦ any
+    key <AB01> { [ Arabic_hamzaonyeh, asciitilde    , guillemotright, U203A ] };// ئ ~ » ›
+    key <AB02> { [ Arabic_hamza  , Arabic_sukun  , guillemotleft , U2039 ] };// ء ْ « ‹
+    key <AB03> { [ Arabic_hamzaonwaw, braceright    , U0061         , U0061 ] };// ؤ } any any
+    key <AB04> { [ Arabic_ra     , braceleft     , U0061         , U0061 ] };// ر { any any
+    key <AB05> { [ Pointer_DfltBtnNext, Pointer_Drag1 , U0061         , U0061 ] };// ﻻ ﻵ any any
+    key <AB06> { [ Arabic_alefmaksura, Arabic_maddaonalef, Arabic_superscript_alef, U0061 ] };// ى آ ٰ any
+    key <AB07> { [ Arabic_tehmarbuta, apostrophe    , U0061         , U0061 ] };// ة apostrophe any any
+    key <AB08> { [ Arabic_waw    , comma         , U066C         , U0061 ] };// و , ٬ any
+    key <AB09> { [ Arabic_zain   , period        , Arabic_jeh    , U0061 ] };// ز . ژ any
+    key <AB10> { [ Arabic_zah    , Arabic_question_mark, U066D         , U200C ] };// ظ ؟ ٭ ‌
+
+    // Fifth row - Bottom (Ctrl, Win, Alt, Space, AltGr, Menu)
+    // Standard:    
+    // Shift:       
+    // AltGr:       
+    // AltGr+Shift: 
+
+
+    // Arrow keys
+    // Standard:    
+    // Shift:       
+    // AltGr:       
+    // AltGr+Shift: 
+
+
+    // Numpad
+    // Standard:    
+    // Shift:       
+    // AltGr:       
+    // AltGr+Shift: 
+

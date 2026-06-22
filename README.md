@@ -1,6 +1,3 @@
-[README.md](https://github.com/user-attachments/files/29197536/README.md)
-# Linux-keyboard-manager-mint-
-Create and Edit Custom keyboard
 # ISO 105 Keyboard Layout Editor
 
 A professional web-based editor for creating and customizing ISO 105 keyboard layouts with full support for 4-level key mappings (Standard, Shift, AltGr, Shift+AltGr). Export your layouts in `.layout` format compatible with XKB (X Keyboard Extension) for Linux desktop environments.

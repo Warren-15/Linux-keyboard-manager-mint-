@@ -1,0 +1,120 @@
+# ================================================================
+# Layout Definition File for FRS.layout
+# ================================================================
+
+# ⚙️ BASIC INFO
+INPUT_SOURCE_NAME="French Emojis (Canada) "
+SHORT_NAME="F😃"
+LANGUAGE_CODE="fr"
+COUNTRY_CODE="ca"
+FLAG="🇨🇦"
+
+    // First row - Numbers and symbols
+    // Standard:    ² & é " apostrophe ( - è _ ç à ) =
+    // Shift:       ~ 1 2 3 4 5 6 7 8 9 0 ° +
+    // AltGr:       ³ ∑ ² # { [ | grave \ # @ ] }
+    // AltGr+Shift: ⁴ ∥ ½ ⅓ ¼ ★ ✴ ☽ ∞ ⊙ φ ○ ≠
+
+    key <TLDE> { [ twosuperior   , asciitilde    , threesuperior , foursuperior ] };// ² ~ ³ ⁴
+    key <AE01> { [ ampersand     , 1             , U2211         , U2225 ] };// & 1 ∑ ∥
+    key <AE02> { [ eacute        , 2             , twosuperior   , onehalf ] };// é 2 ² ½
+    key <AE03> { [ quotedbl      , 3             , numbersign    , onethird ] };// " 3 # ⅓
+    key <AE04> { [ apostrophe    , 4             , braceleft     , onequarter ] };// apostrophe 4 { ¼
+    key <AE05> { [ parenleft     , 5             , bracketleft   , U2605 ] };// ( 5 [ ★
+    key <AE06> { [ minus         , 6             , bar           , U2734 ] };// - 6 | ✴
+    key <AE07> { [ egrave        , 7             , grave         , U263D ] };// è 7 grave ☽
+    key <AE08> { [ underscore    , 8             , backslash     , infinity ] };// _ 8 \ ∞
+    key <AE09> { [ ccedilla      , 9             , numbersign    , U2299 ] };// ç 9 # ⊙
+    key <AE10> { [ agrave        , 0             , at            , Greek_phi ] };// à 0 @ φ
+    key <AE11> { [ parenright    , degree        , bracketright  , circle ] };// ) ° ] ○
+    key <AE12> { [ equal         , plus          , braceright    , notequal ] };// = + } ≠
+
+    // ============================================================
+    // Second row - AZERTY + Emotions (NO DUPLICATES)
+    // A = Angry   | Z = Zzz      | E = Explode   | R = Frustrated
+    // T = Tired   | Y = Skeptical | U = Upset    | I = Ill
+    // O = Ouch    | P = Panic    | ^ = Coin     | $ = Dollar
+    // ============================================================
+
+    key <AD01> { [ a             , A             , U1F620        , U1F621 ] };// a A 😠 😡
+    key <AD02> { [ z             , Z             , U1F634        , U1F4A4 ] };// z Z 😴 💤
+    key <AD03> { [ e             , E             , U1F92F        , U1F4A5 ] };// e E 🤯 💥
+    key <AD04> { [ r             , R             , U1F624        , U1F629 ] };// r R 😤 😩
+    key <AD05> { [ t             , T             , U1F971        , U1F62B ] };// t T 🥱 😫
+    key <AD06> { [ y             , Y             , U1F644        , U1F928 ] };// y Y 🙄 🤨
+    key <AD07> { [ u             , U             , U1F61E        , U1F614 ] };// u U 😞 😔
+    key <AD08> { [ i             , I             , U1F637        , U1F912 ] };// i I 😷 🤒
+    key <AD09> { [ o             , O             , U1F62D        , U1F622 ] };// o O 😭 😢
+    key <AD10> { [ p             , P             , U1F631        , U1F630 ] };// p P 😱 😰
+    key <AD11> { [ dead_circumflex, caron         , U1FA99        , U1F4B3 ] };// ﹒ ˇ 🪙 💳
+    key <AD12> { [ dollar        , EuroSign      , U1F4B2        , U1F4B5 ] };// $ € 💲 💵
+
+    // ============================================================
+    // Third row - QSDFGHJKLM (NO DUPLICATES)
+    // Q = Quiet   | S = Sad      | D = Depressed | F = Fear
+    // G = Grumpy  | H = Happy    | J = Joy       | K = Kiss
+    // L = Love    | M = Crazy    | ù = Music     | * = Star
+    // ============================================================
+
+    key <AC01> { [ q             , Q             , U1F910        , U1F92B ] };// q Q 🤐 🤫
+    key <AC02> { [ s             , S             , U1F61F        , U1F625 ] };// s S 😟 😥
+    key <AC03> { [ d             , D             , U1F623        , U1F641 ] };// d D 😣 🙁
+    key <AC04> { [ f             , F             , U1F627        , U1F626 ] };// f F 😧 😦
+    key <AC05> { [ g             , G             , U1F612        , U1F92C ] };// g G 😒 🤬
+    key <AC06> { [ h             , H             , U1F603        , U1F604 ] };// h H 😃 😄
+    key <AC07> { [ j             , J             , U1F602        , U1F606 ] };// j J 😂 😆
+    key <AC08> { [ k             , K             , U1F618        , U1F970 ] };// k K 😘 🥰
+    key <AC09> { [ l             , L             , U1F60D        , U1F496 ] };// l L 😍 💖
+    key <AC10> { [ m             , M             , U1F92A        , U1F61C ] };// m M 🤪 😜
+    key <AC11> { [ ugrave        , percent       , U1F3B5        , U1F3B6 ] };// ù % 🎵 🎶
+    key <BKSL> { [ asterisk      , multiply      , U2B50         , U2728 ] };// * × ⭐ ✨
+
+    // ============================================================
+    // Fourth row - WXCVBN,;:! (NO DUPLICATES)
+    // W = Wow     | X = eXcited  | C = Confused  | V = Vomit
+    // B = Bored   | N = Shocked  | , = FLUSHED   | ; = Relieved
+    // : = Smirk   | ! = Silly    | < > = Grimace
+    // ============================================================
+
+    key <LSGT> { [ less          , greater       , U1F62C        , U1F925 ] };// < > 😬 🤥
+    key <AB01> { [ w             , W             , U1F62E        , U1F609 ] };// w W 😮 😉
+    key <AB02> { [ x             , X             , U1F929        , U1F60E ] };// x X 🤩 😎
+    key <AB03> { [ c             , C             , U1F615        , U1F635 ] };// c C 😕 😵
+    key <AB04> { [ v             , V             , U1F92E        , U1F922 ] };// v V 🤮 🤢
+    key <AB05> { [ b             , B             , U1F611        , U1F610 ] };// b B 😑 😐
+    key <AB06> { [ n             , N             , U1F632        , U1F92D ] };// n N 😲 🤭
+    key <AB07> { [ comma         , question      , U1F633        , U1F636 ] };// , ? 😳 😶   <-- FLUSHED PRIORITY!
+    key <AB08> { [ semicolon     , period        , U1F60C        , U1F60A ] };// ; . 😌 😊
+    key <AB09> { [ colon         , slash         , U1F60F        , U1F914 ] };// : / 😏 🤔
+    key <AB10> { [ exclam        , exclamdown    , U1F643        , U1F917 ] };// ! ¡ 🙃 🤗
+
+    // ============================================================   // ============================================================
+    // Space & Modifiers
+    // ============================================================
+
+    key <SPCE> { [ space         , space         , U1F533        , U1F532 ] };//     🔳 🔲
+
+    // ============================================================
+    // Arrow keys
+    // ============================================================
+
+    key <UP> { [ Up            , Up            , U2B06         , U1F53C ] };//     ⬆ 🔼
+    key <DOWN> { [ Down          , Down          , U2B07         , U1F53D ] };//     ⬇ 🔽
+    key <LEFT> { [ Left          , Left          , U2B05         , U25C0 ] };//     ⬅ ◀
+    key <RGHT> { [ Right         , Right         , U27A1         , U25B6 ] };//     ➡ ▶
+
+    // ============================================================
+    // Numpad
+    // ============================================================
+
+    key <KP7> { [ 7             , U2166         , U2176         , U277C ] };// 7 Ⅶ ⅶ ❼
+    key <KP8> { [ 8             , U2167         , U2177         , U277D ] };// 8 Ⅷ ⅷ ❽
+    key <KP9> { [ 9             , U2168         , U2178         , U277E ] };// 9 Ⅸ ⅸ ❾
+    key <KP4> { [ 4             , U2163         , U2173         , U2779 ] };// 4 Ⅳ ⅳ ❹
+    key <KP5> { [ 5             , U2164         , U2174         , U277A ] };// 5 Ⅴ ⅴ ❺
+    key <KP6> { [ 6             , U2165         , U2175         , U277B ] };// 6 Ⅵ ⅵ ❻
+    key <KP1> { [ 1             , U2160         , U2170         , U2776 ] };// 1 Ⅰ ⅰ ❶
+    key <KP2> { [ 2             , U2161         , U2171         , U2777 ] };// 2 Ⅱ ⅱ ❷
+    key <KP3> { [ 3             , U2162         , U2172         , U2778 ] };// 3 Ⅲ ⅲ ❸
+    key <KP0> { [ 0             , U2169         , U2179         , U277F ] };// 0 Ⅹ ⅹ ❿
+

@@ -1,0 +1,2505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISO 105 – Keyboard Layout Editor</title>
+    <style>
+        :root {
+            --bg: #1e1e2e;
+            --key: #313244;
+            --text: #cdd6f4;
+            --border: #45475a;
+            --shadow: #0a0a1a;
+            --gap: 6px;
+            --u: 45px;
+            --key-height: 45px;
+            --radius: 4px;
+            --f-row-margin: 16px;
+            --f-gap-width: 13px;
+        }
+
+        body.light {
+            --bg: #f0f0f0;
+            --key: #e0e0e0;
+            --text: #1e1e2e;
+            --border: #b0b0b0;
+            --shadow: #cccccc;
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; user-select:none; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            padding: 20px;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .container {
+            background: var(--bg);
+            padding: 20px 25px;
+            border-radius: 12px;
+            display: inline-block;
+            border: 1px solid var(--border);
+            position: relative;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .temp-tooltip {
+            position: fixed;
+            background: #f38ba8;
+            color: #1e1e2e;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 10002;
+            pointer-events: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            white-space: nowrap;
+            animation: tooltipFade 0.3s ease;
+        }
+
+        .temp-tooltip.success {
+            background: #a6e3a1;
+        }
+
+        @keyframes tooltipFade {
+            from { opacity: 0; transform: translateY(-4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 12px;
+            left: 16px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text);
+            transition: 0.3s;
+            z-index: 10;
+        }
+        .theme-toggle:hover { transform: scale(1.15); }
+
+        .toolbar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 8px;
+        }
+
+        .toolbar button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            background: var(--key);
+            color: var(--text);
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: 0.2s;
+            border: 1px solid var(--border);
+        }
+
+        .toolbar button:hover { filter: brightness(0.9); }
+        .toolbar button.primary { background: #89b4fa; color: #1e1e2e; }
+        .toolbar button.primary:hover { background: #74c7ec; }
+        .toolbar input[type="file"] { display: none; }
+        .toolbar .info { color: var(--text); font-size: 12px; margin-left: 8px; opacity: 0.7; }
+        .toolbar .badge { padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; }
+        .badge.loaded { background: #a6e3a1; color: #1e1e2e; }
+        .badge.missing { background: #f38ba8; color: #1e1e2e; }
+
+        .export-mode {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            color: var(--text);
+        }
+        .export-mode label {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 4px;
+            transition: 0.2s;
+        }
+        .export-mode label:hover { background: var(--border); }
+        .export-mode input[type="radio"] {
+            accent-color: #89b4fa;
+            cursor: pointer;
+            margin: 0;
+        }
+
+        .info-panel {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1.2fr 1.2fr 0.8fr;
+            gap: 10px 16px;
+            background: var(--key);
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+            align-items: center;
+        }
+
+        .info-field {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .info-field label {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text);
+            opacity: 0.7;
+            letter-spacing: 0.3px;
+        }
+
+        .info-field input,
+        .info-field select {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 5px 8px;
+            color: var(--text);
+            font-size: 13px;
+            font-weight: 500;
+            transition: 0.2s;
+            width: 100%;
+        }
+
+        .info-field input:focus,
+        .info-field select:focus {
+            outline: 2px solid #89b4fa;
+            border-color: transparent;
+        }
+
+        .info-field input::placeholder {
+            color: var(--text);
+            opacity: 0.4;
+        }
+
+        .flag-field {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .flag-display {
+            font-size: 32px;
+            line-height: 1;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .flag-hint {
+            font-size: 10px;
+            opacity: 0.5;
+            color: var(--text);
+        }
+
+        .status-line {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 10px;
+            font-size: 12px;
+            color: var(--text);
+            flex-wrap: wrap;
+            opacity: 0.8;
+        }
+        .status-line .label { font-weight: 600; }
+        .status-line .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+        .dot.green { background: #a6e3a1; }
+        .dot.red { background: #f38ba8; }
+        .dot.yellow { background: #f9e2af; }
+
+        .key {
+            background: var(--key);
+            width: var(--u);
+            height: var(--key-height);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            border-radius: var(--radius);
+            font-size: 9px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            color: var(--text);
+            transition: 0.1s;
+            flex-shrink: 0;
+            user-select: none;
+            padding: 0px;
+            overflow: hidden;
+            box-shadow: 0 2px 0 var(--shadow);
+        }
+
+        .key:hover { border-color: #89b4fa; filter: brightness(1.05); }
+        .key:active { transform: translateY(2px); box-shadow: none; }
+
+        .key.single-level {
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+        }
+        .key.single-level .l1,
+        .key.single-level .l2,
+        .key.single-level .l3,
+        .key.single-level .l4 { display: none; }
+
+        .key .l1 {
+            grid-column: 1; grid-row: 1;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 11px; font-weight: 700;
+            color: var(--text);
+            border-bottom: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+            padding: 1px;
+        }
+        .key .l2 {
+            grid-column: 2; grid-row: 1;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 10px; font-weight: 600;
+            color: #89b4fa;
+            border-bottom: 1px solid var(--border);
+            padding: 1px;
+        }
+        .key .l3 {
+            grid-column: 1; grid-row: 2;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 10px; font-weight: 600;
+            color: #a6e3a1;
+            border-right: 1px solid var(--border);
+            padding: 1px;
+        }
+        .key .l4 {
+            grid-column: 2; grid-row: 2;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 10px; font-weight: 600;
+            color: #f9e2af;
+            padding: 1px;
+        }
+
+        .u1   { width: 45px; }
+        .u125 { width: 56px; }
+        .u15  { width: 68px; }
+        .u175 { width: 79px; }
+        .u2   { width: 92px; }
+        .u225 { width: 104px; }
+        .u25  { width: 116px; }
+        .u275 { width: 128px; }
+        .u625 { width: 284px; }
+
+        .h2 { height: calc(var(--key-height) * 2 + var(--gap)); align-items: center; }
+
+        .fn {
+            background: var(--key);
+            font-size: 9px;
+            height: 32px;
+            width: 45px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            color: var(--text);
+            box-shadow: 0 2px 0 var(--shadow);
+        }
+        .mod { background: var(--key); font-weight: 700; color: #89b4fa; }
+        .space { background: var(--key); font-size: 10px; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; }
+
+        .iso-enter {
+            height: calc(var(--key-height) * 2 + var(--gap));
+            border-radius: var(--radius);
+            justify-content: center;
+            align-items: center;
+            font-weight: 700;
+            font-size: 11px;
+            color: #89b4fa;
+            background: var(--key);
+            line-height: 1.2;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: 0.1s;
+            display: flex;
+            flex: 1 1 0%;
+            min-width: 45px;
+            box-shadow: 0 2px 0 var(--shadow);
+        }
+
+        .iso-enter:hover { border-color: #89b4fa; filter: brightness(1.05); }
+        .iso-enter:active { transform: translateY(2px); box-shadow: none; }
+
+        .f-gap { width: var(--f-gap-width); flex-shrink: 0; }
+        .row { display: flex; gap: var(--gap); align-items: center; }
+        .f-row { margin-bottom: var(--f-row-margin); }
+
+        .main-zone {
+            display: flex;
+            flex-direction: column;
+            gap: var(--gap);
+            width: calc(15 * var(--u) + 14 * var(--gap));
+            flex-shrink: 0;
+        }
+
+        .enter-wrapper { display: flex; gap: var(--gap); width: 100%; }
+        .enter-left { display: flex; flex-direction: column; gap: var(--gap); flex: 0 0 auto; }
+        .enter-left .row { width: auto; }
+
+        .key.flex-fill {
+            flex: 1 1 0%;
+            min-width: 45px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+        }
+
+        .numpad-zone {
+            display: grid;
+            grid-template-columns: repeat(4, var(--u));
+            gap: var(--gap);
+            flex-shrink: 0;
+        }
+
+        .numpad-zone .key { width: var(--u); height: var(--key-height); }
+        .numpad-zone .h2 { height: calc(var(--key-height) * 2 + var(--gap)); }
+        .numpad-zone .u2 { grid-column: span 2; width: calc(var(--u) * 2 + var(--gap)); }
+
+        .nav-zone {
+            display: flex;
+            flex-direction: column;
+            gap: var(--gap);
+            flex-shrink: 0;
+        }
+        .nav-zone .row { justify-content: center; }
+
+        .nav-gap { height: var(--gap); }
+
+        .arrows-zone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--gap);
+            margin-top: calc(var(--key-height) * 0.5 + var(--gap) * 0.5);
+        }
+
+        .main-wrapper {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .right-side {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            flex-shrink: 0;
+        }
+
+        .editor-panel {
+            background: var(--key);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-top: 16px;
+            display: none;
+            transition: 0.3s;
+        }
+
+        .editor-panel.active { display: block; }
+
+        .editor-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 12px;
+        }
+
+        .editor-title span {
+            color: #89b4fa;
+            font-family: monospace;
+        }
+
+        .editor-fields {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .editor-field {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .editor-field label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text);
+            opacity: 0.7;
+        }
+
+        .editor-field .input-row {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+
+        .editor-field .input-row input {
+            flex: 1;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 6px 10px;
+            color: var(--text);
+            font-size: 14px;
+            font-weight: 500;
+            transition: 0.2s;
+            min-width: 0;
+        }
+
+        .editor-field .input-row input:focus {
+            outline: 2px solid #89b4fa;
+            border-color: transparent;
+        }
+
+        .editor-field .emoji-btn {
+            background: var(--border);
+            border: none;
+            border-radius: 4px;
+            padding: 4px 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.2s;
+            color: var(--text);
+            flex-shrink: 0;
+            line-height: 1;
+        }
+
+        .editor-field .emoji-btn:hover {
+            background: #89b4fa;
+            color: #1e1e2e;
+        }
+
+        .editor-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .editor-actions button {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: 0.2s;
+        }
+
+        .editor-actions button.primary {
+            background: #89b4fa;
+            color: #1e1e2e;
+        }
+        .editor-actions button.primary:hover {
+            background: #74c7ec;
+        }
+
+        .editor-actions button.secondary {
+            background: var(--border);
+            color: var(--text);
+        }
+        .editor-actions button.secondary:hover {
+            filter: brightness(0.9);
+        }
+
+        .editor-actions button.reset-btn {
+            background: #f38ba8;
+            color: #1e1e2e;
+        }
+        .editor-actions button.reset-btn:hover {
+            background: #e64553;
+        }
+
+        .emoji-popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.75);
+            z-index: 10001;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(6px);
+        }
+        .emoji-popup-overlay.show { display: flex; }
+
+        .emoji-popup-box {
+            background: var(--bg);
+            border: 2px solid #89b4fa;
+            border-radius: 16px;
+            padding: 20px 24px;
+            width: 90vw;
+            max-width: 800px;
+            height: 80vh;
+            max-height: 700px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.9);
+        }
+
+        .emoji-popup-box h3 {
+            color: #89b4fa;
+            margin-bottom: 10px;
+            font-size: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .emoji-popup-box .close-emoji {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 28px;
+            cursor: pointer;
+            padding: 0 8px;
+        }
+        .emoji-popup-box .close-emoji:hover { color: #f38ba8; }
+
+        .emoji-control-bar {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+            flex-shrink: 0;
+            align-items: center;
+        }
+
+        .emoji-control-bar .control-btn {
+            padding: 4px 14px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            background: var(--key);
+            color: var(--text);
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .emoji-control-bar .control-btn:hover {
+            background: #45475a;
+            border-color: #89b4fa;
+        }
+
+        .emoji-accordion {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            overflow-y: auto;
+            flex: 1;
+            padding-right: 4px;
+        }
+
+        .emoji-accordion::-webkit-scrollbar {
+            width: 6px;
+        }
+        .emoji-accordion::-webkit-scrollbar-track {
+            background: var(--bg);
+            border-radius: 3px;
+        }
+        .emoji-accordion::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+
+        .accordion-section {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .accordion-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: var(--key);
+            cursor: pointer;
+            transition: 0.2s;
+            user-select: none;
+        }
+
+        .accordion-header:hover {
+            background: #45475a;
+        }
+
+        .accordion-header .toggle-icon {
+            font-size: 12px;
+            transition: transform 0.3s;
+            color: #89b4fa;
+            min-width: 16px;
+        }
+
+        .accordion-header .section-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            flex: 1;
+        }
+
+        .accordion-header .section-count {
+            font-size: 11px;
+            color: #a6adc8;
+            opacity: 0.7;
+        }
+
+        .accordion-body {
+            display: none;
+            flex-wrap: wrap;
+            gap: 4px;
+            padding: 8px 12px 12px;
+            background: var(--bg);
+        }
+
+        .accordion-body.open {
+            display: flex;
+        }
+
+        .accordion-body .emoji-item {
+            background: var(--key);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 6px 8px;
+            font-size: 20px;
+            cursor: pointer;
+            transition: 0.15s;
+            min-width: 38px;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        .accordion-body .emoji-item:hover {
+            background: #89b4fa;
+            color: #1e1e2e;
+            transform: scale(1.15);
+            border-color: #89b4fa;
+            z-index: 2;
+        }
+
+        .accordion-body .empty-message {
+            width: 100%;
+            color: #a6adc8;
+            padding: 10px;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        @media (max-width: 900px) {
+            .info-panel { grid-template-columns: 1fr 1fr; }
+            .flag-field { grid-column: span 2; justify-content: center; }
+            .editor-fields { grid-template-columns: 1fr 1fr; }
+        }
+
+        @media (max-width: 1050px) {
+            :root {
+                --u: 34px; --gap: 4px; --key-height: 34px;
+                --f-row-margin: 12px; --f-gap-width: 7px;
+            }
+            .key { font-size: 7px; }
+            .key .l1 { font-size: 9px; }
+            .key .l2 { font-size: 8px; }
+            .key .l3 { font-size: 8px; }
+            .key .l4 { font-size: 8px; }
+            .fn { height: 26px; font-size: 8px; width: 34px; }
+            .u1   { width: 34px; }
+            .u125 { width: 43px; }
+            .u15  { width: 51px; }
+            .u175 { width: 60px; }
+            .u2   { width: 70px; }
+            .u225 { width: 79px; }
+            .u25  { width: 88px; }
+            .u275 { width: 98px; }
+            .u625 { width: 215px; }
+            .iso-enter { min-width: 34px; }
+            .key.flex-fill { min-width: 34px; }
+            .main-zone { width: calc(15 * var(--u) + 14 * var(--gap)); }
+            .arrows-zone { margin-top: calc(var(--key-height) * 0.5 + var(--gap) * 0.5); }
+        }
+
+        @media (max-width: 500px) {
+            .info-panel { grid-template-columns: 1fr; }
+            .flag-field { grid-column: span 1; }
+            .editor-fields { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 750px) {
+            :root {
+                --u: 24px; --gap: 3px; --key-height: 24px;
+                --f-row-margin: 8px; --f-gap-width: 6px;
+            }
+            .key { font-size: 6px; border-radius: 2px; }
+            .key .l1 { font-size: 7px; }
+            .key .l2 { font-size: 6px; }
+            .key .l3 { font-size: 6px; }
+            .key .l4 { font-size: 6px; }
+            .fn { height: 20px; font-size: 6px; width: 24px; }
+            .u1   { width: 24px; }
+            .u125 { width: 30px; }
+            .u15  { width: 36px; }
+            .u175 { width: 42px; }
+            .u2   { width: 50px; }
+            .u225 { width: 56px; }
+            .u25  { width: 62px; }
+            .u275 { width: 68px; }
+            .u625 { width: 150px; }
+            .iso-enter { min-width: 24px; }
+            .key.flex-fill { min-width: 24px; }
+            .main-zone { width: calc(15 * var(--u) + 14 * var(--gap)); }
+            .main-wrapper { gap: 8px; }
+            .right-side { gap: 8px; }
+            .container { padding: 10px 12px; }
+            .arrows-zone { margin-top: calc(var(--key-height) * 0.5 + var(--gap) * 0.5); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <button class="theme-toggle" id="themeToggle" title="Toggle Light/Dark Mode">🌙</button>
+
+        <div class="toolbar">
+            <button onclick="resetLayout()">🔄 Reset</button>
+            <button onclick="clearCache()" title="Clear cached definition files">🗑️ Clear Cache</button>
+            <button onclick="loadDefinitionFiles()" title="Load keysymdef.h and emojis">📜 Load Defs</button>
+            <button onclick="document.getElementById('importInput').click()">📂 Import .layout</button>
+
+            <span class="export-mode">
+                <label><input type="radio" name="exportMode" value="DEF" checked> DEF</label>
+                <label><input type="radio" name="exportMode" value="HEX"> HEX</label>
+            </span>
+
+            <button class="primary" onclick="exportLayout()">💾 Export .layout</button>
+            <input type="file" id="importInput" accept=".layout,.txt" onchange="importLayout(event)">
+            <span class="info" id="layoutInfo">No layout loaded</span>
+        </div>
+
+        <div class="info-panel">
+            <div class="info-field">
+                <label>🔤 INPUT_SOURCE_NAME</label>
+                <input type="text" id="sourceName" value="English (US)" placeholder="Layout name">
+            </div>
+            <div class="info-field">
+                <label>📛 SHORT_NAME</label>
+                <input type="text" id="shortName" value="US" maxlength="3"
+                       style="text-transform:uppercase; width:60px;"
+                       oninput="this.value=this.value.toUpperCase().slice(0,3)">
+            </div>
+            <div class="info-field">
+                <label>🌐 LANGUAGE_CODE</label>
+                <select id="langCode">
+                    <option value="ar">Arabic (ar)</option>
+                    <option value="en" selected>English (en)</option>
+                    <option value="fr">French (fr)</option>
+                    <option value="de">German (de)</option>
+                    <option value="es">Spanish (es)</option>
+                    <option value="it">Italian (it)</option>
+                    <option value="pt">Portuguese (pt)</option>
+                    <option value="ru">Russian (ru)</option>
+                    <option value="ja">Japanese (ja)</option>
+                    <option value="zh">Chinese (zh)</option>
+                </select>
+            </div>
+            <div class="info-field">
+                <label>🏳️ COUNTRY_CODE</label>
+                <select id="countryCode"></select>
+            </div>
+            <div class="info-field flag-field">
+                <label>🚩 FLAG</label>
+                <span class="flag-display" id="flagDisplay">🇺🇸</span>
+                <span class="flag-hint" id="flagHint">(Auto-detected)</span>
+            </div>
+        </div>
+
+        <div class="status-line">
+            <span class="label">📜 keysymdef.h:</span>
+            <span class="dot red" id="keysymDot"></span>
+            <span id="keysymStatus">Not loaded</span>
+            <span class="badge missing" id="keysymBadge">❌ missing</span>
+
+            <span style="margin-left:12px;" class="label">📝 emojis:</span>
+            <span class="dot red" id="emojisDot"></span>
+            <span id="emojisStatus">Not loaded</span>
+            <span class="badge missing" id="emojisBadge">❌ missing</span>
+        </div>
+
+    <!-- ===== Function Keys Row ===== -->
+		<div class="row f-row">
+			<div class="key fn" data-key="ESC" onclick="showProtectedKeyPopup(this, 'Esc')">Esc</div>
+			<div class="f-gap"></div>
+			<div class="key fn" data-key="F1" onclick="showProtectedKeyPopup(this, 'F1')">F1</div>
+			<div class="key fn" data-key="F2" onclick="showProtectedKeyPopup(this, 'F2')">F2</div>
+			<div class="key fn" data-key="F3" onclick="showProtectedKeyPopup(this, 'F3')">F3</div>
+			<div class="key fn" data-key="F4" onclick="showProtectedKeyPopup(this, 'F4')">F4</div>
+			<div class="f-gap"></div>
+			<div class="key fn" data-key="F5" onclick="showProtectedKeyPopup(this, 'F5')">F5</div>
+			<div class="key fn" data-key="F6" onclick="showProtectedKeyPopup(this, 'F6')">F6</div>
+			<div class="key fn" data-key="F7" onclick="showProtectedKeyPopup(this, 'F7')">F7</div>
+			<div class="key fn" data-key="F8" onclick="showProtectedKeyPopup(this, 'F8')">F8</div>
+			<div class="f-gap"></div>
+			<div class="key fn" data-key="F9" onclick="showProtectedKeyPopup(this, 'F9')">F9</div>
+			<div class="key fn" data-key="F10" onclick="showProtectedKeyPopup(this, 'F10')">F10</div>
+			<div class="key fn" data-key="F11" onclick="showProtectedKeyPopup(this, 'F11')">F11</div>
+			<div class="key fn" data-key="F12" onclick="showProtectedKeyPopup(this, 'F12')">F12</div>
+			<div class="f-gap"></div>
+			<div class="f-gap"></div>
+			<div class="f-gap"></div>
+			<div class="key fn" data-key="PRTSC" onclick="showProtectedKeyPopup(this, 'PrtSc')">PrtSc</div>
+			<div class="key fn" data-key="SCRLK" onclick="showProtectedKeyPopup(this, 'ScrLk')">ScrLk</div>
+			<div class="key fn" data-key="PAUSE" onclick="showProtectedKeyPopup(this, 'Pause')">Pause</div>
+		</div>
+
+        <!-- Main Area -->
+        <div class="main-wrapper">
+
+            <div class="main-zone" id="mainZone"></div>
+
+            <div class="right-side">
+                <!-- Navigation Keys -->
+                <div class="nav-zone">
+                    <div class="nav-gap"></div>
+                    <div class="row">
+                        <div class="key u1" data-key="INS"><span class="l1">Ins</span><span class="l2"></span><span class="l3"></span><span class="l4"></span></div>
+                        <div class="key u1" data-key="HOME"><span class="l1">Home</span><span class="l2"></span><span class="l3"></span><span class="l4"></span></div>
+                        <div class="key u1" data-key="PGUP"><span class="l1">PgUp</span><span class="l2"></span><span class="l3"></span><span class="l4"></span></div>
+                    </div>
+                    <div class="row">
+                        <div class="key u1" data-key="DEL"><span class="l1">Del</span><span class="l2"></span><span class="l3"></span><span class="l4"></span></div>
+                        <div class="key u1" data-key="END"><span class="l1">End</span><span class="l2"></span><span class="l3"></span><span class="l4"></span></div>
+                        <div class="key u1" data-key="PGDN"><span class="l1">PgDn</span><span class="l2"></span><span class="l3"></span><span class="l4"></span></div>
+                    </div>
+                </div>
+
+                <!-- Arrow Keys -->
+                <div class="arrows-zone" id="arrowsZone"></div>
+            </div>
+
+            <!-- Numpad -->
+            <div class="numpad-zone" id="numpadZone"></div>
+
+        </div>
+
+        <!-- Editor Panel -->
+        <div class="editor-panel" id="editorPanel">
+            <div class="editor-title">⬛ EDIT KEY: <span id="editingKeyDisplay">(Select a key)</span></div>
+            <div class="editor-fields">
+                <div class="editor-field">
+                    <label>Standard</label>
+                    <div class="input-row">
+                        <input type="text" id="level1" placeholder="exp: a" oninput="onLevelChange(0)">
+                        <button class="emoji-btn" onclick="openEmojiPicker(0)" title="Choose from symbols">🔣</button>
+                    </div>
+                </div>
+                <div class="editor-field">
+                    <label>Shift+</label>
+                    <div class="input-row">
+                        <input type="text" id="level2" placeholder="exp: A" oninput="onLevelChange(1)">
+                        <button class="emoji-btn" onclick="openEmojiPicker(1)" title="Choose from symbols">🔣</button>
+                    </div>
+                </div>
+                <div class="editor-field">
+                    <label>AltGr+</label>
+                    <div class="input-row">
+                        <input type="text" id="level3" placeholder="exp: @" oninput="onLevelChange(2)">
+                        <button class="emoji-btn" onclick="openEmojiPicker(2)" title="Choose from symbols">🔣</button>
+                    </div>
+                </div>
+                <div class="editor-field">
+                    <label>Shift+AltGr</label>
+                    <div class="input-row">
+                        <input type="text" id="level4" placeholder="exp: #" oninput="onLevelChange(3)">
+                        <button class="emoji-btn" onclick="openEmojiPicker(3)" title="Choose from symbols">🔣</button>
+                    </div>
+                </div>
+            </div>
+            <div class="editor-actions">
+                <button class="reset-btn" onclick="resetKey()">↩️ Reset</button>
+                <button onclick="clearEditor()" class="secondary">🗑️ Clear</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Emoji Popup -->
+    <div class="emoji-popup-overlay" id="emojiPopup">
+        <div class="emoji-popup-box">
+            <h3>
+                <span id="emojiPopupTitle">😊 Select Character</span>
+                <button class="close-emoji" onclick="closeEmojiPicker()">✕</button>
+            </h3>
+            <div class="emoji-control-bar">
+                <button class="control-btn" onclick="toggleAllSections()">📂 All</button>
+                <span style="flex:1;"></span>
+                <span style="font-size:12px; color:var(--text); opacity:0.6;" id="emojiCountLabel">0 items</span>
+            </div>
+            <div class="emoji-accordion" id="emojiAccordion"></div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        //  0. HELPER: Convert UXXXX to visible emoji
+        // ============================================================
+        function decodeUnicode(str) {
+            if (typeof str !== 'string') return str;
+            return str.replace(/U([0-9A-Fa-f]{4,5})/g, (match, hex) => {
+                try {
+                    return String.fromCodePoint(parseInt(hex, 16));
+                } catch (e) {
+                    return match;
+                }
+            });
+        }
+
+        // ============================================================
+        //  1. GLOBAL VARIABLES
+        // ============================================================
+        let keysymMap = {};
+        let charToName = {};
+        let charToHex = {};
+        let emojiData = {};
+        let currentData = {};
+        let importedData = {};
+        let layoutInfo = { source_name: 'English (US)', short_name: 'US', language: 'en', country: 'US' };
+        let selectedKey = null;
+        let keysymLoaded = false;
+        let emojisLoaded = false;
+        let activeLevelIndex = 0;
+
+        // ============================================================
+        //  2. COUNTRY & FLAG MANAGEMENT
+        // ============================================================
+        const COUNTRY_MAP = {
+            'ar': ['TN','DZ','EG','SA','AE','QA','KW','BH','OM','YE','SY','JO','LB','PS'],
+            'en': ['US','UK','AU','NZ','ZA','IN','PK','NG','GH'],
+            'fr': ['FR','BE','CH','CA','MA','SN','CI','MG'],
+            'de': ['DE','AT','CH','LU','LI'],
+            'es': ['ES','MX','AR','CO','PE','VE','CL','EC','GT','CU'],
+            'it': ['IT','SM','VA'],
+            'pt': ['PT','BR','AO','MZ','GW','CV','ST'],
+            'ru': ['RU','UA','BY','KZ','KG','AM','AZ','GE','MD','TJ','UZ','TM'],
+            'ja': ['JP'],
+            'zh': ['CN','HK','TW','SG']
+        };
+
+        const FLAG_MAP = {
+            'TN':'🇹🇳','DZ':'🇩🇿','EG':'🇪🇬','SA':'🇸🇦','AE':'🇦🇪','QA':'🇶🇦','KW':'🇰🇼','BH':'🇧🇭','OM':'🇴🇲','YE':'🇾🇪','SY':'🇸🇾','JO':'🇯🇴','LB':'🇱🇧','PS':'🇵🇸',
+            'FR':'🇫🇷','BE':'🇧🇪','CH':'🇨🇭','CA':'🇨🇦','MA':'🇲🇦','SN':'🇸🇳','CI':'🇨🇮','MG':'🇲🇬',
+            'US':'🇺🇸','UK':'🇬🇧','AU':'🇦🇺','NZ':'🇳🇿','ZA':'🇿🇦','IN':'🇮🇳','PK':'🇵🇰','NG':'🇳🇬','GH':'🇬🇭',
+            'DE':'🇩🇪','AT':'🇦🇹','LU':'🇱🇺','LI':'🇱🇮',
+            'ES':'🇪🇸','MX':'🇲🇽','AR':'🇦🇷','CO':'🇨🇴','PE':'🇵🇪','VE':'🇻🇪','CL':'🇨🇱','EC':'🇪🇨','GT':'🇬🇹','CU':'🇨🇺',
+            'IT':'🇮🇹','SM':'🇸🇲','VA':'🇻🇦',
+            'PT':'🇵🇹','BR':'🇧🇷','AO':'🇦🇴','MZ':'🇲🇿','GW':'🇬🇼','CV':'🇨🇻','ST':'🇸🇹',
+            'RU':'🇷🇺','UA':'🇺🇦','BY':'🇧🇾','KZ':'🇰🇿','KG':'🇰🇬','AM':'🇦🇲','AZ':'🇦🇿','GE':'🇬🇪','MD':'🇲🇩','TJ':'🇹🇯','UZ':'🇺🇿','TM':'🇹🇲',
+            'JP':'🇯🇵','CN':'🇨🇳','HK':'🇭🇰','TW':'🇹🇼','SG':'🇸🇬'
+        };
+
+        function updateCountryOptions() {
+            const lang = document.getElementById('langCode').value;
+            const countries = COUNTRY_MAP[lang] || [];
+            const sel = document.getElementById('countryCode');
+            sel.innerHTML = '';
+            countries.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c;
+                opt.textContent = `${c} ${FLAG_MAP[c] || ''}`;
+                sel.appendChild(opt);
+            });
+            if (countries.length) {
+                const defaultCountry = lang === 'en' ? 'US' : (lang === 'fr' ? 'FR' : countries[0]);
+                if (countries.includes(defaultCountry)) {
+                    sel.value = defaultCountry;
+                } else {
+                    sel.value = countries[0];
+                }
+            }
+            updateFlag();
+        }
+
+        function updateFlag() {
+            const country = document.getElementById('countryCode').value;
+            const flag = FLAG_MAP[country] || '🏳️';
+            document.getElementById('flagDisplay').textContent = flag;
+            document.getElementById('flagHint').textContent = `(Country: ${country})`;
+        }
+
+        // ============================================================
+        //  3. THEME TOGGLE
+        // ============================================================
+        document.getElementById('themeToggle').addEventListener('click', function() {
+            document.body.classList.toggle('light');
+            this.textContent = document.body.classList.contains('light') ? '☀️' : '🌙';
+        });
+
+        document.getElementById('langCode').addEventListener('change', updateCountryOptions);
+        document.getElementById('countryCode').addEventListener('change', updateFlag);
+
+        // ============================================================
+        //  4. PARSE keysymdef.h
+        // ============================================================
+        function parseKeysymDef(text) {
+            const map = {};
+            const c2n = {};
+            const c2h = {};
+            const lines = text.split('\n');
+
+            for (let line of lines) {
+                line = line.trim();
+                if (!line.startsWith('#define XK_')) continue;
+                const nameMatch = line.match(/^#define\s+XK_(\w+)/);
+                if (!nameMatch) continue;
+                const name = nameMatch[1];
+                let code = null;
+                const commentMatch = line.match(/\/\*\s*U\+([0-9A-Fa-f]{4,5})/);
+                if (commentMatch) {
+                    code = parseInt(commentMatch[1], 16);
+                }
+                if (code === null) {
+                    const hexMatch = line.match(/0x([0-9A-Fa-f]+)/);
+                    if (hexMatch) {
+                        code = parseInt(hexMatch[1], 16);
+                    }
+                }
+                if (code !== null && code > 0 && code < 0x10FFFF) {
+                    const char = String.fromCharCode(code);
+                    map[name] = char;
+                    c2n[char] = name;
+                    const hexStr = 'U' + code.toString(16).toUpperCase();
+                    c2h[char] = hexStr;
+                }
+            }
+
+            keysymMap = map;
+            charToName = c2n;
+            charToHex = c2h;
+            return map;
+        }
+
+        // ============================================================
+        //  5. PARSE EMOJIS FILE
+        // ============================================================
+        function parseEmojisFile(text) {
+            const lines = text.split('\n');
+            const categories = {};
+            let currentCategory = 'Uncategorized';
+
+            function isEmojiOrSymbol(str) {
+                return str && str.length > 0 && !/^[\s\d.,;:!?]+$/.test(str);
+            }
+
+            function extractSymbols(line) {
+                const trimmed = line.trim();
+                if (!trimmed) return [];
+                const tokens = trimmed.split(/[\s,]+/).filter(t => t.length > 0);
+                return tokens.filter(t => isEmojiOrSymbol(t));
+            }
+
+            for (let line of lines) {
+                line = line.trim();
+                if (!line) continue;
+
+                if (line.startsWith('EMOJIS=')) {
+                    const raw = line.substring(7).trim();
+                    const items = raw.split(',').map(s => s.trim()).filter(s => s);
+                    if (!categories['😊 Emojis']) categories['😊 Emojis'] = [];
+                    categories['😊 Emojis'].push(...items);
+                    continue;
+                }
+                if (line.startsWith('XKB_SYMBOLS=')) {
+                    const raw = line.substring(12).trim();
+                    const items = raw.split(',').map(s => s.trim()).filter(s => s);
+                    if (!categories['⌨️ XKB Symbols']) categories['⌨️ XKB Symbols'] = [];
+                    categories['⌨️ XKB Symbols'].push(...items);
+                    continue;
+                }
+                if (line.startsWith('FLAGS_')) {
+                    const parts = line.split('=');
+                    if (parts.length === 2) {
+                        const code = parts[0].replace('FLAGS_', '').trim();
+                        const flag = parts[1].trim();
+                        if (code && flag) {
+                            if (!categories['🏁 Flags']) categories['🏁 Flags'] = [];
+                            categories['🏁 Flags'].push(flag);
+                        }
+                    }
+                    continue;
+                }
+
+                if (line.startsWith('#')) {
+                    let comment = line.replace(/^#\s*/, '').trim();
+                    if (comment.includes('===') || comment.includes('---')) {
+                        let title = comment.replace(/^[=\-\s]+/, '').replace(/[=\-\s]+$/, '');
+                        if (title && isEmojiOrSymbol(title)) {
+                            currentCategory = title;
+                            if (!categories[currentCategory]) categories[currentCategory] = [];
+                        }
+                        continue;
+                    }
+                    if (isEmojiOrSymbol(comment) && !/^[\d\s]+$/.test(comment)) {
+                        currentCategory = comment;
+                        if (!categories[currentCategory]) categories[currentCategory] = [];
+                    }
+                    continue;
+                }
+
+                const symbols = extractSymbols(line);
+                if (symbols.length > 0) {
+                    if (currentCategory && categories[currentCategory] !== undefined) {
+                        categories[currentCategory].push(...symbols);
+                    } else {
+                        if (!categories['Uncategorized']) categories['Uncategorized'] = [];
+                        categories['Uncategorized'].push(...symbols);
+                    }
+                }
+            }
+
+            const cleaned = {};
+            for (let [key, items] of Object.entries(categories)) {
+                if (items && items.length > 0) {
+                    cleaned[key] = [...new Set(items)];
+                }
+            }
+
+            if (Object.keys(cleaned).length === 0) {
+                cleaned['😊 Emojis'] = ['😊','😂','❤️','🔥','👍','👏','🙌','💪','🤔','😎','✨','🌟','⭐','🌈','🎉','🎊','💯'];
+                cleaned['🔣 Symbols'] = ['+','-','=','≠','≈','±','×','÷','<','>','≤','≥','∞'];
+                cleaned['🏁 Flags'] = ['🇺🇸','🇬🇧','🇫🇷','🇩🇪','🇪🇸','🇮🇹','🇵🇹','🇧🇷','🇯🇵','🇨🇳','🇷🇺','🇦🇪','🇸🇦','🇪🇬','🇹🇳','🇩🇿','🇲🇦'];
+            }
+
+            console.log('📊 Categories found:', Object.keys(cleaned));
+            return cleaned;
+        }
+
+        // ============================================================
+        //  6. XKB TO SYMBOL (with decodeUnicode)
+        // ============================================================
+        function xkbToSymbol(name, commentSymbol) {
+            if (!name) return '';
+            name = name.trim().replace(/^"(.*)"$/, '$1');
+
+            let decoded = decodeUnicode(name);
+            if (decoded !== name) return decoded;
+
+            const hexMatch = name.match(/^U([0-9A-F]{4,5})$/i);
+            if (hexMatch) {
+                const code = parseInt(hexMatch[1], 16);
+                if (code > 0) return String.fromCharCode(code);
+            }
+            const hexMatch2 = name.match(/^0x([0-9A-F]{4,5})$/i);
+            if (hexMatch2) {
+                const code = parseInt(hexMatch2[1], 16);
+                if (code > 0) return String.fromCharCode(code);
+            }
+
+            if (keysymMap[name]) return keysymMap[name];
+
+            if (commentSymbol && commentSymbol.length > 0) {
+                return commentSymbol;
+            }
+
+            return name;
+        }
+
+        // ============================================================
+        //  7. UPDATE STATUS
+        // ============================================================
+        function updateKeysymStatus() {
+            const dot = document.getElementById('keysymDot');
+            const status = document.getElementById('keysymStatus');
+            const badge = document.getElementById('keysymBadge');
+            const count = Object.keys(keysymMap).length;
+            if (count > 0) {
+                dot.className = 'dot green';
+                status.textContent = `Loaded (${count} symbols)`;
+                badge.className = 'badge loaded';
+                badge.textContent = '✅ loaded';
+                keysymLoaded = true;
+            } else {
+                dot.className = 'dot red';
+                status.textContent = 'Not loaded';
+                badge.className = 'badge missing';
+                badge.textContent = '❌ missing';
+                keysymLoaded = false;
+            }
+        }
+
+        function updateEmojisStatus() {
+            const dot = document.getElementById('emojisDot');
+            const status = document.getElementById('emojisStatus');
+            const badge = document.getElementById('emojisBadge');
+            let total = 0;
+            for (let key of Object.keys(emojiData)) {
+                if (Array.isArray(emojiData[key])) {
+                    total += emojiData[key].length;
+                }
+            }
+            if (total > 0) {
+                dot.className = 'dot green';
+                status.textContent = `Loaded (${total} items)`;
+                badge.className = 'badge loaded';
+                badge.textContent = '✅ loaded';
+                emojisLoaded = true;
+            } else {
+                dot.className = 'dot red';
+                status.textContent = 'Not loaded';
+                badge.className = 'badge missing';
+                badge.textContent = '❌ missing';
+                emojisLoaded = false;
+            }
+        }
+
+        // ============================================================
+        //  8. CLEAR CACHE
+        // ============================================================
+        function clearCache() {
+            localStorage.removeItem('keysym_cache');
+            localStorage.removeItem('emojis_cache');
+            keysymMap = {};
+            charToName = {};
+            charToHex = {};
+            emojiData = {};
+            keysymLoaded = false;
+            emojisLoaded = false;
+            updateKeysymStatus();
+            updateEmojisStatus();
+            buildKeyboard(currentData);
+            clearEditor();
+            showTemporaryTooltip(document.getElementById('layoutInfo'), '✅ Cache cleared! Use "Load Defs" to reload.');
+        }
+
+        // ============================================================
+        //  9. LOAD DEFINITION FILES
+        // ============================================================
+        async function loadDefinitionFiles() {
+            const cachedKeysym = localStorage.getItem('keysym_cache');
+            const cachedEmojis = localStorage.getItem('emojis_cache');
+
+            let kLoaded = false;
+            let eLoaded = false;
+
+            if (cachedKeysym) {
+                try {
+                    keysymMap = parseKeysymDef(cachedKeysym);
+                    updateKeysymStatus();
+                    kLoaded = true;
+                } catch (e) {}
+            }
+
+            if (cachedEmojis) {
+                try {
+                    const parsed = parseEmojisFile(cachedEmojis);
+                    emojiData = parsed;
+                    updateEmojisStatus();
+                    eLoaded = true;
+                } catch (e) {}
+            }
+
+            if (!kLoaded || !eLoaded) {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.multiple = true;
+                input.accept = '.h,.c,.txt';
+                input.onchange = async (e) => {
+                    const files = e.target.files;
+                    for (let file of files) {
+                        const text = await file.text();
+                        if (file.name === 'keysymdef.h' || file.name === 'keysymdef.c') {
+                            localStorage.setItem('keysym_cache', text);
+                            keysymMap = parseKeysymDef(text);
+                            updateKeysymStatus();
+                        } else if (file.name === 'emojis_and_symbols.txt') {
+                            localStorage.setItem('emojis_cache', text);
+                            const parsed = parseEmojisFile(text);
+                            emojiData = parsed;
+                            updateEmojisStatus();
+                        }
+                    }
+                    buildKeyboard(currentData);
+                    showTemporaryTooltip(document.getElementById('layoutInfo'), '✅ Files loaded successfully!');
+                };
+                input.click();
+            } else {
+                buildKeyboard(currentData);
+            }
+        }
+
+        // ============================================================
+        //  10. FORMAT EXPORT VALUE
+        // ============================================================
+        function formatExportValue(value, mode) {
+            if (!value) return '';
+            value = value.trim();
+
+            const hexMatch = value.match(/^U([0-9A-F]{4,5})(?:U([0-9A-F]{4,5}))*$/i);
+            if (hexMatch) {
+                const parts = value.match(/U([0-9A-F]{4,5})/gi);
+                if (parts && parts.length > 1) {
+                    return parts.map(p => p.toUpperCase()).join('');
+                }
+                let hexStr = hexMatch[1].toUpperCase();
+                while (hexStr.length < 4) hexStr = '0' + hexStr;
+                const fullHex = 'U' + hexStr;
+                if (mode === 'HEX') return fullHex;
+                const code = parseInt(hexStr, 16);
+                if (code > 0 && code < 0x10FFFF) {
+                    const char = String.fromCharCode(code);
+                    if (charToName[char]) return charToName[char];
+                }
+                return fullHex;
+            }
+
+            const emojiParts = value.match(/[\u{1F000}-\u{1FFFF}]|[\u{2600}-\u{27BF}]|[\u{FE00}-\u{FEFF}]|[\u{1F300}-\u{1F5FF}]|[\u{1F600}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]|[\u{1F700}-\u{1F77F}]|[\u{1F780}-\u{1F7FF}]|[\u{1F800}-\u{1F8FF}]|[\u{1F900}-\u{1F9FF}]|[\u{1FA00}-\u{1FA6F}]|[\u{1FA70}-\u{1FAFF}]|[\u{20E3}]/gu);
+            if (emojiParts && emojiParts.length > 1) {
+                const hexParts = emojiParts.map(ch => {
+                    const code = ch.codePointAt(0);
+                    if (code && code > 0) {
+                        let hex = code.toString(16).toUpperCase();
+                        while (hex.length < 4) hex = '0' + hex;
+                        return 'U' + hex;
+                    }
+                    return '';
+                }).filter(p => p);
+                return hexParts.join('');
+            }
+
+            if (keysymMap[value] !== undefined) {
+                if (mode === 'DEF') return value;
+                const char = keysymMap[value];
+                if (charToHex[char]) return charToHex[char];
+                const code = char.codePointAt(0);
+                if (code && code > 0) {
+                    let hex = code.toString(16).toUpperCase();
+                    while (hex.length < 4) hex = '0' + hex;
+                    return 'U' + hex;
+                }
+                return value;
+            }
+
+            const firstChar = value.charAt(0);
+            const code = firstChar.codePointAt(0);
+            if (code && code > 0) {
+                let hex = code.toString(16).toUpperCase();
+                while (hex.length < 4) hex = '0' + hex;
+                return 'U' + hex;
+            }
+
+            return value;
+        }
+
+        // ============================================================
+        //  11. KEY DEFINITIONS (ISO 105)
+        // ============================================================
+        const KEY_DEFS = {
+            'TLDE': { row: 0, col: 0, span: 1, label: '`' },
+            'AE01': { row: 0, col: 1, span: 1, label: '1' },
+            'AE02': { row: 0, col: 2, span: 1, label: '2' },
+            'AE03': { row: 0, col: 3, span: 1, label: '3' },
+            'AE04': { row: 0, col: 4, span: 1, label: '4' },
+            'AE05': { row: 0, col: 5, span: 1, label: '5' },
+            'AE06': { row: 0, col: 6, span: 1, label: '6' },
+            'AE07': { row: 0, col: 7, span: 1, label: '7' },
+            'AE08': { row: 0, col: 8, span: 1, label: '8' },
+            'AE09': { row: 0, col: 9, span: 1, label: '9' },
+            'AE10': { row: 0, col: 10, span: 1, label: '0' },
+            'AE11': { row: 0, col: 11, span: 1, label: '-' },
+            'AE12': { row: 0, col: 12, span: 1, label: '=' },
+            'BKSP': { row: 0, col: 13, span: 2, label: '⌫', mod: true },
+
+            'TAB': { row: 1, col: 0, span: 1.5, label: '⇥', mod: true },
+            'AD01': { row: 1, col: 1.5, span: 1, label: 'Q' },
+            'AD02': { row: 1, col: 2.5, span: 1, label: 'W' },
+            'AD03': { row: 1, col: 3.5, span: 1, label: 'E' },
+            'AD04': { row: 1, col: 4.5, span: 1, label: 'R' },
+            'AD05': { row: 1, col: 5.5, span: 1, label: 'T' },
+            'AD06': { row: 1, col: 6.5, span: 1, label: 'Y' },
+            'AD07': { row: 1, col: 7.5, span: 1, label: 'U' },
+            'AD08': { row: 1, col: 8.5, span: 1, label: 'I' },
+            'AD09': { row: 1, col: 9.5, span: 1, label: 'O' },
+            'AD10': { row: 1, col: 10.5, span: 1, label: 'P' },
+            'AD11': { row: 1, col: 11.5, span: 1, label: '[' },
+            'AD12': { row: 1, col: 12.5, span: 1, label: ']' },
+            'RTRN': { row: 1, col: 13.5, span: 1, label: '⏎', enter: true },
+
+            'CAPS': { row: 2, col: 0, span: 1.75, label: '🔒', mod: true },
+            'AC01': { row: 2, col: 1.75, span: 1, label: 'A' },
+            'AC02': { row: 2, col: 2.75, span: 1, label: 'S' },
+            'AC03': { row: 2, col: 3.75, span: 1, label: 'D' },
+            'AC04': { row: 2, col: 4.75, span: 1, label: 'F' },
+            'AC05': { row: 2, col: 5.75, span: 1, label: 'G' },
+            'AC06': { row: 2, col: 6.75, span: 1, label: 'H' },
+            'AC07': { row: 2, col: 7.75, span: 1, label: 'J' },
+            'AC08': { row: 2, col: 8.75, span: 1, label: 'K' },
+            'AC09': { row: 2, col: 9.75, span: 1, label: 'L' },
+            'AC10': { row: 2, col: 10.75, span: 1, label: ';' },
+            'AC11': { row: 2, col: 11.75, span: 1, label: "'" },
+            'BKSL': { row: 2, col: 12.75, span: 0.75, label: '#', mod: true, fill: true },
+
+            'LFSH': { row: 3, col: 0, span: 2.25, label: '⇧', mod: true },
+            'LSGT': { row: 3, col: 2.25, span: 1, label: '\\' },
+            'AB01': { row: 3, col: 3.25, span: 1, label: 'Z' },
+            'AB02': { row: 3, col: 4.25, span: 1, label: 'X' },
+            'AB03': { row: 3, col: 5.25, span: 1, label: 'C' },
+            'AB04': { row: 3, col: 6.25, span: 1, label: 'V' },
+            'AB05': { row: 3, col: 7.25, span: 1, label: 'B' },
+            'AB06': { row: 3, col: 8.25, span: 1, label: 'N' },
+            'AB07': { row: 3, col: 9.25, span: 1, label: 'M' },
+            'AB08': { row: 3, col: 10.25, span: 1, label: ',' },
+            'AB09': { row: 3, col: 11.25, span: 1, label: '.' },
+            'AB10': { row: 3, col: 12.25, span: 1, label: '/' },
+            'RTSH': { row: 3, col: 13.25, span: 1.75, label: '⇧', mod: true },
+
+            'LCTL': { row: 4, col: 0, span: 1.25, label: 'Ctrl', mod: true },
+            'LWIN': { row: 4, col: 1.25, span: 1.25, label: 'Tux', mod: true },
+            'LALT': { row: 4, col: 2.5, span: 1.25, label: 'Alt', mod: true },
+            'SPCE': { row: 4, col: 3.75, span: 6.25, label: 'SPACE', space: true },
+            'RALT': { row: 4, col: 10, span: 1.25, label: 'AltGr', mod: true },
+            'RWIN': { row: 4, col: 11.25, span: 1.25, label: 'Tux', mod: true },
+            'MENU': { row: 4, col: 12.5, span: 1.25, label: '☰', mod: true },
+            'RCTL': { row: 4, col: 13.75, span: 1.25, label: 'Ctrl', mod: true },
+
+            'UP':    { row: -1, col: -1, span: 1, label: '↑' },
+            'DOWN':  { row: -1, col: -1, span: 1, label: '↓' },
+            'LEFT':  { row: -1, col: -1, span: 1, label: '←' },
+            'RGHT':  { row: -1, col: -1, span: 1, label: '→' },
+        };
+
+        // ============================================================
+        //  12. PARSE LAYOUT FILE (NP + KP support)
+        // ============================================================
+        function parseLayoutFile(text) {
+            const lines = text.split('\n');
+            const result = {};
+            const npToKpMap = {
+                'NP00': 'KP0', 'NP01': 'KP1', 'NP02': 'KP2', 'NP03': 'KP3',
+                'NP04': 'KP4', 'NP05': 'KP5', 'NP06': 'KP6', 'NP07': 'KP7',
+                'NP08': 'KP8', 'NP09': 'KP9', 'NPDL': 'KPDL', 'NPEN': 'KPEN',
+                'NPPL': 'KPAD', 'NPSU': 'KPSU', 'NPST': 'KPMU', 'NPSL': 'KPDV'
+            };
+
+            layoutInfo.source_name = text.match(/INPUT_SOURCE_NAME="([^"]*)"/)?.[1] || 'English (US)';
+            layoutInfo.short_name = text.match(/SHORT_NAME="([^"]*)"/)?.[1] || 'US';
+            layoutInfo.language = text.match(/LANGUAGE_CODE="([^"]*)"/)?.[1] || 'en';
+            layoutInfo.country = text.match(/COUNTRY_CODE="([^"]*)"/)?.[1] || 'US';
+
+            for (let line of lines) {
+                line = line.trim();
+                const fullMatch = line.match(/key\s+<([^>]+)>\s*\{\s*\[\s*([^\]]*)\s*\]\s*\}\s*\/\/\s*(.*)/);
+                if (fullMatch) {
+                    let code = fullMatch[1];
+                    if (npToKpMap[code]) {
+                        code = npToKpMap[code];
+                    }
+                    const levelsStr = fullMatch[2];
+                    const rawComment = fullMatch[3] || '';
+
+                    let parts = [];
+                    let current = '';
+                    let depth = 0;
+                    for (let ch of levelsStr) {
+                        if (ch === ',' && depth === 0) {
+                            parts.push(current.trim());
+                            current = '';
+                        } else {
+                            current += ch;
+                        }
+                    }
+                    if (current.trim()) parts.push(current.trim());
+
+                    parts = parts.map(s => s.trim().replace(/^"(.*)"$/, '$1'));
+                    while (parts.length < 4) parts.push('');
+
+                    const symParts = rawComment.split(/\s+/).filter(s => s.length > 0);
+                    const commentSymbols = ['', '', '', ''];
+                    for (let i = 0; i < Math.min(4, symParts.length); i++) {
+                        commentSymbols[i] = symParts[i];
+                    }
+
+                    result[code] = {
+                        levels: parts,
+                        comment: commentSymbols,
+                        rawComment: rawComment
+                    };
+                    continue;
+                }
+                const simpleMatch = line.match(/key\s+<([^>]+)>\s*\{\s*\[\s*([^\]]*)\s*\]\s*\}/);
+                if (simpleMatch) {
+                    let code = simpleMatch[1];
+                    if (npToKpMap[code]) {
+                        code = npToKpMap[code];
+                    }
+                    const levelsStr = simpleMatch[2];
+                    let parts = [];
+                    let current = '';
+                    let depth = 0;
+                    for (let ch of levelsStr) {
+                        if (ch === ',' && depth === 0) {
+                            parts.push(current.trim());
+                            current = '';
+                        } else {
+                            current += ch;
+                        }
+                    }
+                    if (current.trim()) parts.push(current.trim());
+                    parts = parts.map(s => s.trim().replace(/^"(.*)"$/, '$1'));
+                    while (parts.length < 4) parts.push('');
+                    result[code] = {
+                        levels: parts,
+                        comment: ['', '', '', ''],
+                        rawComment: ''
+                    };
+                    continue;
+                }
+            }
+            return result;
+        }
+
+        // ============================================================
+        //  13. BUILD KEYBOARD
+        // ============================================================
+        function buildKeyboard(data) {
+            currentData = data || {};
+            const mainZone = document.getElementById('mainZone');
+            mainZone.innerHTML = '';
+
+            // Row 1: Numbers
+            const row1 = document.createElement('div');
+            row1.className = 'row';
+            const numKeys = ['TLDE', 'AE01', 'AE02', 'AE03', 'AE04', 'AE05', 'AE06', 'AE07', 'AE08', 'AE09', 'AE10', 'AE11', 'AE12', 'BKSP'];
+            numKeys.forEach(code => {
+                const def = KEY_DEFS[code];
+                if (!def) return;
+                const entry = data[code] || { levels: ['', '', '', ''], comment: ['', '', '', ''] };
+                row1.appendChild(createKeyElement(code, def, entry));
+            });
+            mainZone.appendChild(row1);
+
+            // Rows 2 & 3: QWERTY + Enter
+            const enterWrapper = document.createElement('div');
+            enterWrapper.className = 'enter-wrapper';
+            const enterLeft = document.createElement('div');
+            enterLeft.className = 'enter-left';
+
+            const row2 = document.createElement('div');
+            row2.className = 'row';
+            const qwertyKeys = ['TAB', 'AD01', 'AD02', 'AD03', 'AD04', 'AD05', 'AD06', 'AD07', 'AD08', 'AD09', 'AD10', 'AD11', 'AD12'];
+            qwertyKeys.forEach(code => {
+                const def = KEY_DEFS[code];
+                if (!def) return;
+                const entry = data[code] || { levels: ['', '', '', ''], comment: ['', '', '', ''] };
+                row2.appendChild(createKeyElement(code, def, entry));
+            });
+            enterLeft.appendChild(row2);
+
+            const row3 = document.createElement('div');
+            row3.className = 'row';
+            const asdfKeys = ['CAPS', 'AC01', 'AC02', 'AC03', 'AC04', 'AC05', 'AC06', 'AC07', 'AC08', 'AC09', 'AC10', 'AC11', 'BKSL'];
+            asdfKeys.forEach(code => {
+                const def = KEY_DEFS[code];
+                if (!def) return;
+                const entry = data[code] || { levels: ['', '', '', ''], comment: ['', '', '', ''] };
+                row3.appendChild(createKeyElement(code, def, entry));
+            });
+            enterLeft.appendChild(row3);
+
+            enterWrapper.appendChild(enterLeft);
+
+            const enterEntry = data['RTRN'] || { levels: ['⏎', '', '', ''], comment: ['Enter', '', '', ''], rawComment: '' };
+            const enterEl = document.createElement('div');
+            enterEl.className = 'iso-enter mod';
+            enterEl.textContent = xkbToSymbol(enterEntry.levels[0], enterEntry.comment[0]) || '⏎';
+            enterEl.dataset.key = 'RTRN';
+            enterEl.onclick = () => selectKey('RTRN');
+            enterWrapper.appendChild(enterEl);
+            mainZone.appendChild(enterWrapper);
+
+            // Row 4: ZXCV
+            const row4 = document.createElement('div');
+            row4.className = 'row';
+            const zxcvKeys = ['LFSH', 'LSGT', 'AB01', 'AB02', 'AB03', 'AB04', 'AB05', 'AB06', 'AB07', 'AB08', 'AB09', 'AB10', 'RTSH'];
+            zxcvKeys.forEach(code => {
+                const def = KEY_DEFS[code];
+                if (!def) return;
+                const entry = data[code] || { levels: ['', '', '', ''], comment: ['', '', '', ''] };
+                row4.appendChild(createKeyElement(code, def, entry));
+            });
+            mainZone.appendChild(row4);
+
+            // Row 5: Bottom
+            const row5 = document.createElement('div');
+            row5.className = 'row';
+            const bottomKeys = ['LCTL', 'LWIN', 'LALT', 'SPCE', 'RALT', 'RWIN', 'MENU', 'RCTL'];
+            bottomKeys.forEach(code => {
+                const def = KEY_DEFS[code];
+                if (!def) return;
+                const entry = data[code] || { levels: ['', '', '', ''], comment: ['', '', '', ''] };
+                row5.appendChild(createKeyElement(code, def, entry));
+            });
+            mainZone.appendChild(row5);
+
+            // Arrows
+            buildArrows(data);
+
+            // Numpad
+            buildNumpad(data);
+
+            document.getElementById('layoutInfo').textContent =
+                `📄 ${layoutInfo.source_name || 'Unnamed'} (${layoutInfo.short_name || '??'})`;
+
+            if (selectedKey) {
+                selectKey(selectedKey);
+            }
+        }
+
+        // ============================================================
+        //  14. BUILD ARROWS
+        // ============================================================
+        function buildArrows(data) {
+            const zone = document.getElementById('arrowsZone');
+            zone.innerHTML = '';
+
+            const arrowKeys = [
+                { code: 'UP',    levels: ['', '', 'U2191', 'U21E7'], comment: ['↑', '⇧', '', ''], symbol: '↑' },
+                { code: 'DOWN',  levels: ['', '', 'U2193', 'U21E9'], comment: ['↓', '⇩', '', ''], symbol: '↓' },
+                { code: 'LEFT',  levels: ['', '', 'U2190', 'U21E6'], comment: ['←', '⇦', '', ''], symbol: '←' },
+                { code: 'RGHT',  levels: ['', '', 'U2192', 'U21E8'], comment: ['→', '⇨', '', ''], symbol: '→' },
+            ];
+
+            const hasArrowData = data && (data['UP'] || data['DOWN'] || data['LEFT'] || data['RGHT']);
+
+            const upData = arrowKeys.find(k => k.code === 'UP');
+            const upDiv = document.createElement('div');
+            if (!hasArrowData) {
+                upDiv.className = 'key u1 single-level';
+                upDiv.textContent = upData.symbol;
+            } else {
+                upDiv.className = 'key u1';
+                const syms = upData.levels.map((l, i) => xkbToSymbol(l, upData.comment[i] || ''));
+                upDiv.innerHTML = `
+                    <span class="l1">${syms[0] || ''}</span>
+                    <span class="l2">${syms[1] || ''}</span>
+                    <span class="l3">${syms[2] || ''}</span>
+                    <span class="l4">${syms[3] || ''}</span>
+                `;
+            }
+            upDiv.onclick = () => selectKey('UP');
+            zone.appendChild(upDiv);
+
+            const rowDiv = document.createElement('div');
+            rowDiv.className = 'row';
+            const bottomArrows = ['LEFT', 'DOWN', 'RGHT'];
+            bottomArrows.forEach(code => {
+                const dataItem = arrowKeys.find(k => k.code === code);
+                const el = document.createElement('div');
+                if (!hasArrowData) {
+                    el.className = 'key u1 single-level';
+                    el.textContent = dataItem.symbol;
+                } else {
+                    el.className = 'key u1';
+                    const syms = dataItem.levels.map((l, i) => xkbToSymbol(l, dataItem.comment[i] || ''));
+                    el.innerHTML = `
+                        <span class="l1">${syms[0] || ''}</span>
+                        <span class="l2">${syms[1] || ''}</span>
+                        <span class="l3">${syms[2] || ''}</span>
+                        <span class="l4">${syms[3] || ''}</span>
+                    `;
+                }
+                el.onclick = () => selectKey(code);
+                rowDiv.appendChild(el);
+            });
+            zone.appendChild(rowDiv);
+        }
+
+        // ============================================================
+        //  15. BUILD NUMPAD
+        // ============================================================
+        function buildNumpad(data) {
+            const zone = document.getElementById('numpadZone');
+            zone.innerHTML = '';
+
+            const numpadLayout = [
+                [
+                    { code: 'NMLK', label: 'Num', levels: ['Num', '', '', ''], mod: true },
+                    { code: 'KPDV', label: '/', levels: ['/', '', '', ''], mod: false },
+                    { code: 'KPMU', label: '*', levels: ['*', '', '', ''], mod: false },
+                    { code: 'KPSU', label: '-', levels: ['-', '', '', ''], mod: false },
+                ],
+                [
+                    { code: 'KP7', label: '7', levels: ['7', '', '', ''], mod: false },
+                    { code: 'KP8', label: '8', levels: ['8', '', '', ''], mod: false },
+                    { code: 'KP9', label: '9', levels: ['9', '', '', ''], mod: false },
+                    { code: 'KPAD', label: '+', levels: ['+', '', '', ''], mod: true, tall: true },
+                ],
+                [
+                    { code: 'KP4', label: '4', levels: ['4', '', '', ''], mod: false },
+                    { code: 'KP5', label: '5', levels: ['5', '', '', ''], mod: false },
+                    { code: 'KP6', label: '6', levels: ['6', '', '', ''], mod: false },
+                ],
+                [
+                    { code: 'KP1', label: '1', levels: ['1', '', '', ''], mod: false },
+                    { code: 'KP2', label: '2', levels: ['2', '', '', ''], mod: false },
+                    { code: 'KP3', label: '3', levels: ['3', '', '', ''], mod: false },
+                    { code: 'KPEN', label: 'Ent', levels: ['Ent', '', '', ''], mod: true, tall: true },
+                ],
+                [
+                    { code: 'KP0', label: '0', levels: ['0', '', '', ''], mod: false, wide: true },
+                    { code: 'KPDL', label: '.', levels: ['.', '', '', ''], mod: false },
+                ],
+            ];
+
+            numpadLayout.forEach(row => {
+                row.forEach(item => {
+                    const keyDiv = document.createElement('div');
+                    keyDiv.className = 'key';
+
+                    if (item.mod) keyDiv.classList.add('mod');
+                    if (item.tall) keyDiv.classList.add('h2');
+                    if (item.wide) keyDiv.classList.add('u2');
+
+                    const isFunctional = ['NMLK', 'KPAD', 'KPSU', 'KPMU', 'KPDV', 'KPDL'].includes(item.code);
+
+                    if (isFunctional) {
+                        keyDiv.style.display = 'flex';
+                        keyDiv.style.alignItems = 'center';
+                        keyDiv.style.justifyContent = 'center';
+                        keyDiv.textContent = item.label;
+                        keyDiv.onclick = () => {
+                            showTemporaryTooltip(keyDiv, '🔒 This key is protected');
+                        };
+                    } else {
+                        const entry = data ? data[item.code] : null;
+                        let levels = item.levels;
+                        let comments = ['', '', '', ''];
+                        if (entry) {
+                            levels = entry.levels || item.levels;
+                            comments = entry.comment || ['', '', '', ''];
+                        }
+                        const l1Text = xkbToSymbol(levels[0], comments[0]) || item.label;
+                        const l2Text = xkbToSymbol(levels[1], comments[1]) || '';
+                        const l3Text = xkbToSymbol(levels[2], comments[2]) || '';
+                        const l4Text = xkbToSymbol(levels[3], comments[3]) || '';
+                        keyDiv.innerHTML = `
+                            <span class="l1">${l1Text}</span>
+                            <span class="l2">${l2Text}</span>
+                            <span class="l3">${l3Text}</span>
+                            <span class="l4">${l4Text}</span>
+                        `;
+                        keyDiv.onclick = () => selectKey(item.code);
+                    }
+
+                    if (item.wide) {
+                        keyDiv.style.gridColumn = 'span 2';
+                        keyDiv.style.width = 'calc(var(--u) * 2 + var(--gap))';
+                    }
+                    if (item.tall) {
+                        keyDiv.style.gridRow = 'span 2';
+                        keyDiv.style.height = 'calc(var(--key-height) * 2 + var(--gap))';
+                    }
+
+                    zone.appendChild(keyDiv);
+                });
+            });
+        }
+
+        // ============================================================
+        //  16. CREATE KEY ELEMENT
+        // ============================================================
+        function createKeyElement(code, def, entry) {
+            const el = document.createElement('div');
+            el.className = 'key';
+
+            const sizeClass = getSizeClass(def.span);
+            if (sizeClass) el.classList.add(sizeClass);
+            if (def.mod) el.classList.add('mod');
+            if (def.space) el.classList.add('space');
+            if (def.fill) el.classList.add('flex-fill');
+
+            el.dataset.key = code;
+
+            // Tux image for LWIN and RWIN
+            if (code === 'LWIN' || code === 'RWIN') {
+                el.style.display = 'flex';
+                el.style.alignItems = 'center';
+                el.style.justifyContent = 'center';
+                el.style.padding = '2px';
+                el.style.background = 'transparent';
+                el.style.border = '1px solid var(--border)';
+                
+                const img = document.createElement('img');
+                img.src = 'Data/tux.png';
+                img.alt = 'Tux';
+                img.style.width = '100%';
+                img.style.height = '100%';
+                img.style.objectFit = 'contain';
+                img.style.maxWidth = '32px';
+                img.style.maxHeight = '32px';
+                img.style.imageRendering = 'auto';
+                img.draggable = false;
+                
+                el.appendChild(img);
+                el.onclick = () => selectKey(code);
+                return el;
+            }
+
+            const levels = entry.levels || ['', '', '', ''];
+            const comment = entry.comment || ['', '', '', ''];
+
+            const l1Text = decodeUnicode(xkbToSymbol(levels[0], comment[0]) || def.label || '');
+            const l2Text = decodeUnicode(xkbToSymbol(levels[1], comment[1]) || '');
+            const l3Text = decodeUnicode(xkbToSymbol(levels[2], comment[2]) || '');
+            const l4Text = decodeUnicode(xkbToSymbol(levels[3], comment[3]) || '');
+
+            el.innerHTML = `
+                <span class="l1">${l1Text}</span>
+                <span class="l2">${l2Text}</span>
+                <span class="l3">${l3Text}</span>
+                <span class="l4">${l4Text}</span>
+            `;
+
+            el.onclick = () => selectKey(code);
+
+            return el;
+        }
+
+        // ============================================================
+        //  17. GET SIZE CLASS
+        // ============================================================
+        function getSizeClass(span) {
+            if (span <= 1) return 'u1';
+            if (span <= 1.25) return 'u125';
+            if (span <= 1.5) return 'u15';
+            if (span <= 1.75) return 'u175';
+            if (span <= 2) return 'u2';
+            if (span <= 2.25) return 'u225';
+            if (span <= 2.5) return 'u25';
+            if (span <= 2.75) return 'u275';
+            if (span >= 6) return 'u625';
+            return 'u1';
+        }
+
+        // ============================================================
+        //  18. KEY SELECTION & EDITING
+        // ============================================================
+        function selectKey(code) {
+            selectedKey = code;
+            const entry = currentData[code] || { levels: ['', '', '', ''], comment: ['', '', '', ''] };
+            const levels = entry.levels || ['', '', '', ''];
+            const comment = entry.comment || ['', '', '', ''];
+
+            document.getElementById('level1').value = decodeUnicode(xkbToSymbol(levels[0], comment[0]) || '');
+            document.getElementById('level2').value = decodeUnicode(xkbToSymbol(levels[1], comment[1]) || '');
+            document.getElementById('level3').value = decodeUnicode(xkbToSymbol(levels[2], comment[2]) || '');
+            document.getElementById('level4').value = decodeUnicode(xkbToSymbol(levels[3], comment[3]) || '');
+
+            const arrowKeys = ['UP', 'DOWN', 'LEFT', 'RGHT'];
+            if (arrowKeys.includes(code)) {
+                document.getElementById('level1').disabled = true;
+                document.getElementById('level2').disabled = true;
+                document.getElementById('level3').disabled = false;
+                document.getElementById('level4').disabled = false;
+                document.getElementById('level1').placeholder = '🔒 Standard (fixed)';
+                document.getElementById('level2').placeholder = '🔒 Shift (fixed)';
+                document.getElementById('editingKeyDisplay').textContent = `${code} (AltGr/Shift+AltGr only)`;
+            } else {
+                document.getElementById('level1').disabled = false;
+                document.getElementById('level2').disabled = false;
+                document.getElementById('level3').disabled = false;
+                document.getElementById('level4').disabled = false;
+                document.getElementById('level1').placeholder = 'exp: a';
+                document.getElementById('level2').placeholder = 'exp: A';
+                document.getElementById('editingKeyDisplay').textContent = code;
+            }
+
+            document.getElementById('editorPanel').classList.add('active');
+        }
+
+        function onLevelChange(index) {
+            if (!selectedKey) return;
+            
+            const arrowKeys = ['UP', 'DOWN', 'LEFT', 'RGHT'];
+            if (arrowKeys.includes(selectedKey) && (index === 0 || index === 1)) {
+                const entry = currentData[selectedKey] || { levels: ['', '', '', ''], comment: ['', '', '', ''] };
+                const levels = entry.levels || ['', '', '', ''];
+                const comment = entry.comment || ['', '', '', ''];
+                const levelInputs = [
+                    document.getElementById('level1'),
+                    document.getElementById('level2'),
+                    document.getElementById('level3'),
+                    document.getElementById('level4')
+                ];
+                levelInputs[0].value = decodeUnicode(xkbToSymbol(levels[0], comment[0]) || '');
+                levelInputs[1].value = decodeUnicode(xkbToSymbol(levels[1], comment[1]) || '');
+                showTemporaryTooltip(levelInputs[index], '🔒 This level is fixed');
+                return;
+            }
+
+            const levelInputs = [
+                document.getElementById('level1'),
+                document.getElementById('level2'),
+                document.getElementById('level3'),
+                document.getElementById('level4')
+            ];
+
+            const val = levelInputs[index].value;
+            if (!currentData[selectedKey]) {
+                currentData[selectedKey] = { levels: ['', '', '', ''], comment: ['', '', '', ''], rawComment: '' };
+            }
+            currentData[selectedKey].levels[index] = val;
+            buildKeyboard(currentData);
+            selectKey(selectedKey);
+        }
+
+        function resetKey() {
+            if (!selectedKey) return;
+            const original = importedData[selectedKey];
+            if (original) {
+                currentData[selectedKey] = JSON.parse(JSON.stringify(original));
+            } else {
+                delete currentData[selectedKey];
+            }
+            buildKeyboard(currentData);
+            if (currentData[selectedKey]) {
+                selectKey(selectedKey);
+            } else {
+                clearEditor();
+            }
+        }
+
+        function clearEditor() {
+            selectedKey = null;
+            document.getElementById('editorPanel').classList.remove('active');
+            document.getElementById('editingKeyDisplay').textContent = '(Select a key)';
+            document.getElementById('level1').value = '';
+            document.getElementById('level2').value = '';
+            document.getElementById('level3').value = '';
+            document.getElementById('level4').value = '';
+            document.getElementById('level1').disabled = false;
+            document.getElementById('level2').disabled = false;
+            document.getElementById('level3').disabled = false;
+            document.getElementById('level4').disabled = false;
+            document.getElementById('level1').placeholder = 'exp: a';
+            document.getElementById('level2').placeholder = 'exp: A';
+        }
+
+        // ============================================================
+        //  19. EMOJI PICKER
+        // ============================================================
+        function openEmojiPicker(levelIndex) {
+            const levelInputs = [
+                document.getElementById('level1'),
+                document.getElementById('level2'),
+                document.getElementById('level3'),
+                document.getElementById('level4')
+            ];
+            
+            const input = levelInputs[levelIndex];
+            if (input.disabled) {
+                showTemporaryTooltip(input, '🔒 This level is fixed and cannot be modified');
+                return;
+            }
+            
+            activeLevelIndex = levelIndex;
+            document.getElementById('emojiPopup').classList.add('show');
+            buildEmojiAccordion();
+        }
+
+			// ============================================================
+		//  Protected Key Popup (Function Keys & others)
+		// ============================================================
+		function showProtectedKeyPopup(element, keyName) {
+			showTemporaryTooltip(element, `🔒 ${keyName} is a function key and cannot be edited`);
+		}
+
+		// دالة مساعدة لإظهار تلميح مؤقت (تظهر فوق العنصر)
+		function showTemporaryTooltip(element, message) {
+			// إزالة أي تلميح سابق
+			const oldTooltip = document.querySelector('.temp-tooltip');
+			if (oldTooltip) oldTooltip.remove();
+			
+			const tooltip = document.createElement('div');
+			tooltip.className = 'temp-tooltip';
+			tooltip.textContent = message;
+			tooltip.style.cssText = `
+				position: fixed;
+				background: #f38ba8;
+				color: #1e1e2e;
+				padding: 6px 14px;
+				border-radius: 6px;
+				font-size: 12px;
+				font-weight: 600;
+				z-index: 10002;
+				pointer-events: none;
+				box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+				animation: tooltipFade 0.3s ease;
+				font-family: 'Segoe UI', Arial, sans-serif;
+				white-space: nowrap;
+			`;
+			
+			// تحديد موقع التلميح فوق العنصر
+			const rect = element.getBoundingClientRect();
+			const tooltipWidth = Math.min(message.length * 7 + 30, 300);
+			const left = rect.left + rect.width/2 - tooltipWidth/2;
+			const top = rect.top - 35;
+			
+			tooltip.style.left = Math.max(10, left) + 'px';
+			tooltip.style.top = Math.max(10, top) + 'px';
+			
+			document.body.appendChild(tooltip);
+			
+			// إخفاء التلميح بعد 2 ثانية
+			setTimeout(() => {
+				tooltip.style.opacity = '0';
+				tooltip.style.transition = 'opacity 0.3s';
+				setTimeout(() => tooltip.remove(), 300);
+			}, 2000);
+		}
+
+        function closeEmojiPicker() {
+            document.getElementById('emojiPopup').classList.remove('show');
+        }
+
+        function buildEmojiAccordion() {
+            const container = document.getElementById('emojiAccordion');
+            container.innerHTML = '';
+            const sectionNames = Object.keys(emojiData);
+            let totalItems = 0;
+            for (let key of sectionNames) {
+                if (emojiData[key] && emojiData[key].length > 0) {
+                    totalItems += emojiData[key].length;
+                }
+            }
+            document.getElementById('emojiCountLabel').textContent = `${totalItems} items`;
+
+            if (sectionNames.length === 0) {
+                container.innerHTML = `<div class="empty-message" style="padding:30px;text-align:center;color:#a6adc8;">
+                    ⚠️ No emojis or symbols loaded. Use "Load Defs" button.
+                </div>`;
+                return;
+            }
+
+            sectionNames.forEach((sectionName) => {
+                const items = emojiData[sectionName];
+                if (!items || items.length === 0) return;
+                const sectionDiv = document.createElement('div');
+                sectionDiv.className = 'accordion-section';
+                const header = document.createElement('div');
+                header.className = 'accordion-header';
+                header.innerHTML = `
+                    <span class="toggle-icon">▶</span>
+                    <span class="section-title">${sectionName}</span>
+                    <span class="section-count">${items.length}</span>
+                `;
+                header.onclick = () => toggleSection(sectionDiv);
+                const body = document.createElement('div');
+                body.className = 'accordion-body';
+                items.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'emoji-item';
+                    div.textContent = decodeUnicode(item);
+                    div.title = item;
+                    div.onclick = (e) => {
+                        e.stopPropagation();
+                        const levelInputs = [
+                            document.getElementById('level1'),
+                            document.getElementById('level2'),
+                            document.getElementById('level3'),
+                            document.getElementById('level4')
+                        ];
+                        levelInputs[activeLevelIndex].value = decodeUnicode(item);
+                        onLevelChange(activeLevelIndex);
+                        closeEmojiPicker();
+                    };
+                    body.appendChild(div);
+                });
+                sectionDiv.appendChild(header);
+                sectionDiv.appendChild(body);
+                container.appendChild(sectionDiv);
+            });
+
+            const firstSection = container.querySelector('.accordion-section');
+            if (firstSection) {
+                toggleSection(firstSection);
+            }
+        }
+
+        function toggleSection(sectionEl) {
+            const body = sectionEl.querySelector('.accordion-body');
+            const icon = sectionEl.querySelector('.toggle-icon');
+            const isOpen = body.classList.contains('open');
+            if (isOpen) {
+                body.classList.remove('open');
+                icon.textContent = '▶';
+            } else {
+                body.classList.add('open');
+                icon.textContent = '▼';
+            }
+        }
+
+        function toggleAllSections() {
+            const sections = document.querySelectorAll('.accordion-section');
+            const allOpen = Array.from(sections).every(s => s.querySelector('.accordion-body').classList.contains('open'));
+            sections.forEach(section => {
+                const body = section.querySelector('.accordion-body');
+                const icon = section.querySelector('.toggle-icon');
+                if (allOpen) {
+                    body.classList.remove('open');
+                    icon.textContent = '▶';
+                } else {
+                    body.classList.add('open');
+                    icon.textContent = '▼';
+                }
+            });
+        }
+
+        // ============================================================
+        //  20. IMPORT
+        // ============================================================
+        function importLayout(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const text = e.target.result;
+                    const data = parseLayoutFile(text);
+                    currentData = data;
+                    importedData = JSON.parse(JSON.stringify(data));
+                    clearEditor();
+                    document.getElementById('sourceName').value = layoutInfo.source_name || 'English (US)';
+                    document.getElementById('shortName').value = layoutInfo.short_name || 'US';
+                    document.getElementById('langCode').value = layoutInfo.language || 'en';
+                    updateCountryOptions();
+                    document.getElementById('countryCode').value = layoutInfo.country || 'US';
+                    updateFlag();
+                    buildKeyboard(data);
+                    showTemporaryTooltip(document.getElementById('layoutInfo'), '✅ Layout imported successfully!');
+                } catch (err) {
+                    showTemporaryTooltip(document.getElementById('importInput'), '❌ Error reading file: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        // ============================================================
+        //  21. EXPORT
+        // ============================================================
+        function exportLayout() {
+            const mode = document.querySelector('input[name="exportMode"]:checked').value;
+
+            layoutInfo.source_name = document.getElementById('sourceName').value;
+            layoutInfo.short_name = document.getElementById('shortName').value;
+            layoutInfo.language = document.getElementById('langCode').value;
+            layoutInfo.country = document.getElementById('countryCode').value;
+
+            const lines = [];
+
+            lines.push('# ================================================================');
+            lines.push(`# Layout Definition File for ${layoutInfo.short_name || 'custom'}.layout`);
+            lines.push('# ================================================================');
+            lines.push('');
+            lines.push('# ⚙️ BASIC INFO');
+            lines.push(`INPUT_SOURCE_NAME="${layoutInfo.source_name}"`);
+            lines.push(`SHORT_NAME="${layoutInfo.short_name}"`);
+            lines.push(`LANGUAGE_CODE="${layoutInfo.language}"`);
+            lines.push(`COUNTRY_CODE="${layoutInfo.country}"`);
+            const flag = FLAG_MAP[layoutInfo.country] || '🏳️';
+            lines.push(`FLAG="${flag}"`);
+            lines.push('');
+
+            function getGlyph(sym) {
+                if (!sym) return ' ';
+                let targetSym = sym.trim();
+
+                if (targetSym.match(/^U[0-9A-F]{4,5}(?:U[0-9A-F]{4,5})+$/i)) {
+                    const parts = targetSym.match(/U([0-9A-F]{4,5})/gi);
+                    if (parts) {
+                        let result = '';
+                        for (let part of parts) {
+                            const hex = part.substring(1);
+                            const code = parseInt(hex, 16);
+                            if (code > 0 && code < 0x10FFFF) {
+                                result += String.fromCharCode(code);
+                            }
+                        }
+                        return result || ' ';
+                    }
+                }
+
+                if (targetSym.startsWith('U')) {
+                    let hexStr = targetSym.substring(1);
+                    if (hexStr.match(/^[0-9A-Fa-f]+$/)) {
+                        let code = parseInt(hexStr, 16);
+                        if (code > 0 && code < 0x10FFFF) {
+                            return String.fromCharCode(code);
+                        }
+                    }
+                    return ' ';
+                }
+
+                if (typeof charToName !== 'undefined') {
+                    for (let ch in charToName) {
+                        if (charToName[ch] === targetSym) return ch;
+                    }
+                }
+
+                if (typeof keysymMap !== 'undefined') {
+                    for (let ch in keysymMap) {
+                        if (keysymMap[ch] === targetSym) return ch;
+                    }
+                }
+
+                return targetSym;
+            }
+
+            function generateRowSummary(title, keyList) {
+                let std = '', shv = '', alt = '', alsh = '';
+                keyList.forEach(code => {
+                    if (code === 'RTRN' || code === 'BKSP' || code === 'TAB' || code === 'CAPS' ||
+                        code === 'LFSH' || code === 'RTSH' || code === 'LCTL' || code === 'RCTL' ||
+                        code === 'LWIN' || code === 'RWIN' || code === 'LALT' || code === 'RALT' ||
+                        code === 'MENU' || code === 'SPCE') return;
+                    const entry = currentData[code];
+                    const lvls = entry ? (entry.levels || ['', '', '', '']) : ['', '', '', ''];
+                    std += getGlyph(lvls[0]) + ' ';
+                    shv += getGlyph(lvls[1]) + ' ';
+                    alt += getGlyph(lvls[2]) + ' ';
+                    alsh += getGlyph(lvls[3]) + ' ';
+                });
+                return [
+                    `    // ${title}`,
+                    `    // Standard:    ${std.trim()}`,
+                    `    // Shift:       ${shv.trim()}`,
+                    `    // AltGr:       ${alt.trim()}`,
+                    `    // AltGr+Shift: ${alsh.trim()}`
+                ];
+            }
+
+            function normalizeHexValue(val) {
+                if (!val) return '';
+                let clean = val.trim();
+                if (clean.startsWith('U') && clean.length > 1) {
+                    let hex = clean.substring(1);
+                    if (hex.match(/^[0-9A-Fa-f]+$/)) {
+                        return 'U' + hex.toUpperCase().padStart(4, '0');
+                    }
+                }
+                return clean;
+            }
+
+            const rowGroups = [
+                { title: "First row - Numbers and symbols", keys: ['TLDE','AE01','AE02','AE03','AE04','AE05','AE06','AE07','AE08','AE09','AE10','AE11','AE12'] },
+                { title: "Second row - QWERTY (with Enter)", keys: ['TAB','AD01','AD02','AD03','AD04','AD05','AD06','AD07','AD08','AD09','AD10','AD11','AD12'] },
+                { title: "Third row - ASDF (with CapsLock)", keys: ['CAPS','AC01','AC02','AC03','AC04','AC05','AC06','AC07','AC08','AC09','AC10','AC11','BKSL'] },
+                { title: "Fourth row - ZXCV (with Shift)", keys: ['LFSH','LSGT','AB01','AB02','AB03','AB04','AB05','AB06','AB07','AB08','AB09','AB10','RTSH'] },
+                { title: "Fifth row - Bottom (Ctrl, Win, Alt, Space, AltGr, Menu)", keys: ['LCTL','LWIN','LALT','SPCE','RALT','RWIN','MENU','RCTL'] },
+                { title: "Arrow keys", keys: ['UP','DOWN','LEFT','RGHT'] },
+                { title: "Numpad", keys: ['NMLK','KPDV','KPMU','KPSU','KP7','KP8','KP9','KPAD','KP4','KP5','KP6','KP1','KP2','KP3','KPEN','KP0','KPDL'] }
+            ];
+
+            rowGroups.forEach(group => {
+                const summary = generateRowSummary(group.title, group.keys);
+                summary.forEach(line => lines.push(line));
+                lines.push('');
+
+                group.keys.forEach(code => {
+                    const entry = currentData[code];
+                    if (!entry) return;
+                    const levels = entry.levels || ['', '', '', ''];
+                    const l1 = normalizeHexValue(formatExportValue(levels[0], mode));
+                    const l2 = normalizeHexValue(formatExportValue(levels[1], mode));
+                    const l3 = normalizeHexValue(formatExportValue(levels[2], mode));
+                    const l4 = normalizeHexValue(formatExportValue(levels[3], mode));
+
+                    let formattedKeys = [l1, l2, l3, l4].map(v => v.padEnd(14)).join(', ').trimEnd();
+                    let line = `    key <${code}> { [ ${formattedKeys} ] };`;
+
+                    const glyphs = levels.map(lvl => getGlyph(lvl)).join(' ');
+                    line = line.padEnd(76) + `// ${glyphs}`;
+                    lines.push(line);
+                });
+                lines.push('');
+            });
+
+            const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `${layoutInfo.short_name || 'layout'}.layout`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        // ============================================================
+        //  22. RESET
+        // ============================================================
+        function resetLayout() {
+            currentData = {};
+            importedData = {};
+            layoutInfo = { source_name: 'English (US)', short_name: 'US', language: 'en', country: 'US' };
+            clearEditor();
+            document.getElementById('sourceName').value = 'English (US)';
+            document.getElementById('shortName').value = 'US';
+            document.getElementById('langCode').value = 'en';
+            updateCountryOptions();
+            document.getElementById('countryCode').value = 'US';
+            updateFlag();
+            buildKeyboard({});
+            document.getElementById('layoutInfo').textContent = 'No layout loaded';
+        }
+
+
+    // ============================================================
+	//  23. KEYBOARD SHORTCUT: Physical key -> Edit
+	// ============================================================
+	document.addEventListener('keydown', function(e) {
+		// Ignore if typing in input fields
+		if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') {
+			return;
+		}
+
+		// Map physical keys to editor key codes
+		const keyMap = {
+			'`': 'TLDE', '1': 'AE01', '2': 'AE02', '3': 'AE03', '4': 'AE04',
+			'5': 'AE05', '6': 'AE06', '7': 'AE07', '8': 'AE08', '9': 'AE09',
+			'0': 'AE10', '-': 'AE11', '=': 'AE12',
+			'Backspace': 'BKSP',
+			'Tab': 'TAB',
+			'q': 'AD01', 'w': 'AD02', 'e': 'AD03', 'r': 'AD04', 't': 'AD05',
+			'y': 'AD06', 'u': 'AD07', 'i': 'AD08', 'o': 'AD09', 'p': 'AD10',
+			'[': 'AD11', ']': 'AD12',
+			'Enter': 'RTRN',
+			'CapsLock': 'CAPS',
+			'a': 'AC01', 's': 'AC02', 'd': 'AC03', 'f': 'AC04', 'g': 'AC05',
+			'h': 'AC06', 'j': 'AC07', 'k': 'AC08', 'l': 'AC09', ';': 'AC10',
+			"'": 'AC11', '\\': 'BKSL',
+			'Shift': 'LFSH',
+			'z': 'AB01', 'x': 'AB02', 'c': 'AB03', 'v': 'AB04', 'b': 'AB05',
+			'n': 'AB06', 'm': 'AB07', ',': 'AB08', '.': 'AB09', '/': 'AB10',
+			'Control': 'LCTL',
+			'Alt': 'LALT',
+			' ': 'SPCE',
+			'AltGraph': 'RALT',
+			'ContextMenu': 'MENU',
+			'ArrowUp': 'UP',
+			'ArrowDown': 'DOWN',
+			'ArrowLeft': 'LEFT',
+			'ArrowRight': 'RGHT'
+		};
+
+		// Numpad keys
+		const numpadMap = {
+			'Numpad0': 'KP0', 'Numpad1': 'KP1', 'Numpad2': 'KP2', 'Numpad3': 'KP3',
+			'Numpad4': 'KP4', 'Numpad5': 'KP5', 'Numpad6': 'KP6', 'Numpad7': 'KP7',
+			'Numpad8': 'KP8', 'Numpad9': 'KP9',
+			'NumpadDecimal': 'KPDL', 'NumpadEnter': 'KPEN',
+			'NumpadAdd': 'KPAD', 'NumpadSubtract': 'KPSU',
+			'NumpadMultiply': 'KPMU', 'NumpadDivide': 'KPDV'
+		};
+
+		// ===== FUNCTION KEYS (F1-F12, Escape, PrintScreen, ScrollLock, Pause) =====
+		const functionKeys = [
+			'Escape', 'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12',
+			'PrintScreen', 'ScrollLock', 'Pause'
+		];
+
+		// Check if key is a function key
+		if (functionKeys.includes(e.key) || functionKeys.includes(e.code)) {
+			let keyName = e.key;
+			if (keyName === 'Escape') keyName = 'Esc';
+			if (keyName === 'PrintScreen') keyName = 'PrtSc';
+			if (keyName === 'ScrollLock') keyName = 'ScrLk';
+			if (keyName === 'Pause') keyName = 'Pause';
+			e.preventDefault();
+			showTemporaryTooltip(document.getElementById('layoutInfo'), `🔒 ${keyName} is a function key and cannot be edited`);
+			return;
+		}
+
+		// Check if key is in numpad map
+		let code = numpadMap[e.code];
+		// If not, check regular key map
+		if (!code) {
+			code = keyMap[e.key];
+		}
+
+		if (code) {
+			e.preventDefault();
+			// Check if the key exists in KEY_DEFS or is a valid key
+			if (KEY_DEFS[code] || code.startsWith('KP')) {
+				selectKey(code);
+			}
+		}
+	});
+        // ============================================================
+        //  24. INITIALIZATION
+        // ============================================================
+        updateCountryOptions();
+        updateKeysymStatus();
+        updateEmojisStatus();
+        buildKeyboard({});
+
+        window.addEventListener('DOMContentLoaded', function() {
+            const cachedKeysym = localStorage.getItem('keysym_cache');
+            const cachedEmojis = localStorage.getItem('emojis_cache');
+
+            if (cachedKeysym) {
+                try {
+                    keysymMap = parseKeysymDef(cachedKeysym);
+                    updateKeysymStatus();
+                } catch (e) {}
+            }
+
+            if (cachedEmojis) {
+                try {
+                    const parsed = parseEmojisFile(cachedEmojis);
+                    emojiData = parsed;
+                    updateEmojisStatus();
+                } catch (e) {}
+            }
+
+            if (!keysymLoaded || !emojisLoaded) {
+                console.log('⚠️ Definition files not found in localStorage. Use "Load Defs" button.');
+            }
+        });
+    </script>
+
+</body>
+</html>

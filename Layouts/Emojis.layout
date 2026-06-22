@@ -1,0 +1,140 @@
+# ================================================================
+# Layout Definition File for EMJ_AZERTY.layout
+# ================================================================
+
+# ⚙️ BASIC INFO
+INPUT_SOURCE_NAME="Emoji AZERTY (France)"
+SHORT_NAME="EMJ"
+LANGUAGE_CODE="fr"
+COUNTRY_CODE="FR"
+FLAG="🇫🇷"
+
+# ================================================================
+# FIRST ROW - Numbers & Symbols
+# ================================================================
+# Standard:    😊 🍎 🍌 🍒 🍇 🍊 🍋 🍉 🍑 🍓 💯 🔢
+# Shift:       🤩 🧠 🦋 🌺 🌻 🌹 🍄 🌸 🌼 🌷 🎯 🔄
+# AltGr:       🥳 🐘 🦓 🦒 🦍 🦧 🐪 🦙 🐫 🦘 ✅ 🎲
+# AltGr+Shift: 🤯 🦄 🐉 🦕 🦖 🐊 🦈 🐋 🐳 🐙 ❌ 🎭
+
+key <TLDE> { [ U1F60A, U1F929, U1F973, U1F92F ] }; // 😊 🤩 🥳 🤯
+key <AE01> { [ U1F34E, U1F9E0, U1F418, U1F984 ] }; // 🍎 🧠 🐘 🦄
+key <AE02> { [ U1F34C, U1F98B, U1F40B, U1F432 ] }; // 🍌 🦋 🐉 🐲
+key <AE03> { [ U1F352, U1F33A, U1F992, U1F995 ] }; // 🍒 🌺 🦒 🦕
+key <AE04> { [ U1F347, U1F33B, U1F98D, U1F996 ] }; // 🍇 🌻 🦍 🦖
+key <AE05> { [ U1F34A, U1F339, U1F98E, U1F98C ] }; // 🍊 🌹 🦧 🐊
+key <AE06> { [ U1F34B, U1F344, U1F43A, U1F988 ] }; // 🍋 🍄 🐪 🦈
+key <AE07> { [ U1F349, U1F338, U1F99A, U1F40B ] }; // 🍉 🌸 🦙 🐋
+key <AE08> { [ U1F351, U1F33C, U1F99B, U1F433 ] }; // 🍑 🌼 🦘 🐳
+key <AE09> { [ U1F353, U1F337, U1F419, U1F981 ] }; // 🍓 🌷 🐙 🦁
+key <AE10> { [ U1F4AF, U1F3AF, U2705, U274C ] }; // 💯 🎯 ✅ ❌
+key <AE11> { [ U1F522, U1F504, U1F3B2, U1F3AD ] }; // 🔢 🔄 🎲 🎭
+
+# ================================================================
+# SECOND ROW - AZERTY (A, Z, E, R, T, Y, U, I, O, P, $, ¤)
+# ================================================================
+# A: Angry, Alien, Astronaut, Apple
+# Z: Zebra, Zipper, Zap, Zzz
+# E: Elephant, Eagle, Eggplant, Earth
+# R: Rocket, Robot, Rainbow, Ring
+# T: Tiger, Turtle, Tree, Tent
+# Y: Yellow, Yarn, Yoga, Yak
+# U: Unicorn, Umbrella, Under, Up
+# I: Ice cream, Island, Iguana, Ink
+# O: Owl, Octopus, Orange, Orbit
+# P: Penguin, Pizza, Panda, Parrot
+
+key <AD01> { [ U1F620, U1F47D, U1F6F8, U1F34E ] }; // 😠 👽 🚀 🍎
+key <AD02> { [ U1F993, U1F4CB, U26A1, U1F4A4 ] }; // 🦓 📋 ⚡ 💤
+key <AD03> { [ U1F418, U1F985, U1F346, U1F30D ] }; // 🐘 🦅 🍆 🌍
+key <AD04> { [ U1F680, U1F916, U1F308, U1F48D ] }; // 🚀 🤖 🌈 💍
+key <AD05> { [ U1F42F, U1F422, U1F332, U1F3FA ] }; // 🐯 🐢 🌲 ⛺
+key <AD06> { [ U1F49B, U1F9F6, U1F9D8, U1F42D ] }; // 💛 🧶 🧘 🐪
+key <AD07> { [ U1F984, U1F4A4, U1F31C, U1F53C ] }; // 🦄 💤 🌜 🔼
+key <AD08> { [ U1F368, U1F3DD, U1F40E, U1F4DA ] }; // 🍨 🏝 🦎 📚
+key <AD09> { [ U1F989, U1F419, U1F34A, U1F320 ] }; // 🦉 🐙 🍊 🌠
+key <AD10> { [ U1F427, U1F355, U1F43C, U1F99C ] }; // 🐧 🍕 🐼 🦜
+key <AD11> { [ U1F4B0, U1F4B8, U1F4B3, U1F4B5 ] }; // 💰 💸 💳 💵
+key <AD12> { [ U1F4B0, U1F4B8, U1F4B3, U1F4B5 ] }; // 💰 💸 💳 💵
+
+# ================================================================
+# THIRD ROW - QSDFGHJKLM (French layout)
+# ================================================================
+# Q: Queen, Question, Quill, Quartz
+# S: Sun, Star, Snake, Ship
+# D: Dog, Dolphin, Dragon, Diamond
+# F: Fire, Flower, Fish, Fox
+# G: Ghost, Globe, Giraffe, Gorilla
+# H: Heart, Horse, Hedgehog, Honey
+# J: Joy, Juggle, Jellyfish, Jeep
+# K: Key, King, Kiwi, Koala
+# L: Lion, Leaf, Lemon, Laptop
+# M: Moon, Monkey, Mushroom, Mermaid
+
+key <AC01> { [ U1F451, U2753, U1F58B, U1F4A0 ] }; // 👑 ❓ 🖋 💠
+key <AC02> { [ U2600, U2B50, U1F40D, U1F6F6 ] }; // ☀ ⭐ 🐍 ⛵
+key <AC03> { [ U1F436, U1F42C, U1F409, U1F48E ] }; // 🐶 🐬 🐉 💎
+key <AC04> { [ U1F525, U1F33A, U1F420, U1F98A ] }; // 🔥 🌺 🐠 🦊
+key <AC05> { [ U1F47B, U1F30E, U1F992, U1F98D ] }; // 👻 🌍 🦒 🦍
+key <AC06> { [ U2764, U1F40E, U1F994, U1F36F ] }; // ❤ 🐴 🦔 🍯
+key <AC07> { [ U1F602, U1F93F, U1F421, U1F699 ] }; // 😂 🤹 🐡 🚙
+key <AC08> { [ U1F511, U1F451, U1F95D, U1F428 ] }; // 🔑 👑 🥝 🐨
+key <AC09> { [ U1F981, U1F33F, U1F34B, U1F4BB ] }; // 🦁 🌿 🍋 💻
+key <AC10> { [ U1F315, U1F412, U1F344, U1F9DC ] }; // 🌕 🐒 🍄 🧜
+key <AC11> { [ U1F3B5, U1F3BC, U1F3B6, U1F3A4 ] }; // 🎵 🎼 🎶 🎤
+key <BKSL> { [ U2728, U1F525, U1F4A7, U1F32A ] }; // ✨ 🔥 💧 🌪
+
+# ================================================================
+# FOURTH ROW - WXCVBN,;:!
+# ================================================================
+# W: Whale, Water, Wave, Wind
+# X: X-ray, Xylophone, X marks, eXplore
+# C: Cat, Cake, Candy, Cloud
+# V: Violin, Vulture, Volcano, Vortex
+# B: Bee, Bird, Boat, Balloon
+# N: Night, Narwhal, Nest, Newspaper
+# ,: Comma, Comet, Coffee, Camera
+# ;: Semicolon, Seashell, Starfish, Storm
+# :: Colon, Clock, Compass, Crown
+# !: Exclaim, Explosion, Exclamation, Energy
+
+key <AB01> { [ U1F433, U1F4A7, U1F30A, U1F32A ] }; // 🐳 💧 🌊 🌪
+key <AB02> { [ U1F535, U1F3BA, U274C, U1F30F ] }; // 🔵 🎹 ❌ 🌏
+key <AB03> { [ U1F431, U1F370, U1F36C, U2601 ] }; // 🐱 🍰 🍬 ☁
+key <AB04> { [ U1F3BB, U1F985, U1F30B, U1F300 ] }; // 🎻 🦅 🌋 🌀
+key <AB05> { [ U1F41D, U1F426, U1F6F3, U1F388 ] }; // 🐝 🐦 🛳 🎈
+key <AB06> { [ U1F31A, U1F42D, U1F421, U1F4F0 ] }; // 🌚 🐪 🐡 📰
+key <AB07> { [ U002C, U2604, U2615, U1F4F7 ] }; // , ☄ ☕ 📷
+key <AB08> { [ U003B, U1F41A, U1F991, U2602 ] }; // ; 🐚 🦑 ☂
+key <AB09> { [ U003A, U1F570, U1F9ED, U1F451 ] }; // : 🕰 🧭 👑
+key <AB10> { [ U0021, U1F4A5, U2757, U26A1 ] }; // ! 💥 ❗ ⚡
+
+key <LSGT> { [ U1F4A1, U1F9E0, U1F9CA, U1F4A3 ] }; // 💡 🧠 🧊 💣
+
+# ================================================================
+# SPACE BAR
+# ================================================================
+key <SPCE> { [ space, space, U1F533, U1F532 ] }; //     🔳 🔲
+
+# ================================================================
+# ARROW KEYS
+# ================================================================
+key <UP>    { [ Up, Up, U2B06, U1F53C ] }; //     ⬆ 🔼
+key <DOWN>  { [ Down, Down, U2B07, U1F53D ] }; //     ⬇ 🔽
+key <LEFT>  { [ Left, Left, U2B05, U25C0 ] }; //     ⬅ ◀
+key <RGHT>  { [ Right, Right, U27A1, U25B6 ] }; //     ➡ ▶
+
+# ================================================================
+# NUMPAD - Clear & Simple
+# ================================================================
+key <KP7> { [ 7, U1F4C7, U1F522, U1F3B0 ] }; // 7 📇 🔢 🎰
+key <KP8> { [ 8, U1F4C8, U1F4CA, U1F3B1 ] }; // 8 📈 📊 🎱
+key <KP9> { [ 9, U1F4C9, U1F4C8, U1F3AF ] }; // 9 📉 📈 🎯
+key <KP4> { [ 4, U1F4C4, U1F4D1, U1F4D2 ] }; // 4 📄 📑 📒
+key <KP5> { [ 5, U1F4C5, U1F4C6, U1F4C3 ] }; // 5 📅 📆 📃
+key <KP6> { [ 6, U1F4C8, U1F4CA, U1F4C4 ] }; // 6 📈 📊 📄
+key <KP1> { [ 1, U1F4C4, U1F4D4, U1F4D3 ] }; // 1 📄 📔 📓
+key <KP2> { [ 2, U1F4C5, U1F4C6, U1F4C7 ] }; // 2 📅 📆 📇
+key <KP3> { [ 3, U1F4C8, U1F4C9, U1F4CA ] }; // 3 📈 📉 📊
+key <KP0> { [ 0, U1F4C4, U1F4D1, U1F4D2 ] }; // 0 📄 📑 📒
+key <KPDL> { [ period, numbersign, U1F4AA, U1F4A5 ] }; // . # 💪 💥

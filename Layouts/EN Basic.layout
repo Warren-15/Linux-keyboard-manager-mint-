@@ -1,0 +1,106 @@
+# ================================================================
+# Layout Definition File for en.layout
+# ================================================================
+
+# ⚙️ BASIC INFO
+INPUT_SOURCE_NAME="English (us) "
+SHORT_NAME="en"
+LANGUAGE_CODE="en"
+COUNTRY_CODE="US"
+FLAG="🇺🇸"
+
+    // First row - Numbers and symbols
+    // Standard:    grave 1 2 3 4 5 6 7 8 9 0 - =
+    // Shift:       ~ ! @ # $ % ^ & * ( ) _ +
+    // AltGr:       
+    // AltGr+Shift: 
+
+    key <TLDE> { [ grave         , asciitilde    ,               , ] };     // grave ~    
+    key <AE01> { [ 1             , exclam        ,               , ] };     // 1 !    
+    key <AE02> { [ 2             , at            ,               , ] };     // 2 @    
+    key <AE03> { [ 3             , numbersign    ,               , ] };     // 3 #    
+    key <AE04> { [ 4             , dollar        ,               , ] };     // 4 $    
+    key <AE05> { [ 5             , percent       ,               , ] };     // 5 %    
+    key <AE06> { [ 6             , asciicircum   ,               , ] };     // 6 ^    
+    key <AE07> { [ 7             , ampersand     ,               , ] };     // 7 &    
+    key <AE08> { [ 8             , asterisk      ,               , ] };     // 8 *    
+    key <AE09> { [ 9             , parenleft     ,               , ] };     // 9 (    
+    key <AE10> { [ 0             , parenright    ,               , ] };     // 0 )    
+    key <AE11> { [ minus         , underscore    ,               , ] };     // - _    
+    key <AE12> { [ equal         , plus          ,               , ] };     // = +    
+
+    // Second row - QWERTY (with Enter)
+    // Standard:    q w e r t y u i o p [ ]
+    // Shift:       Q W E R T Y   I O P { }
+    // AltGr:       
+    // AltGr+Shift: 
+
+    key <AD01> { [ q             , Q             ,               , ] };     // q Q    
+    key <AD02> { [ w             , W             ,               , ] };     // w W    
+    key <AD03> { [ e             , E             ,               , ] };     // e E    
+    key <AD04> { [ r             , R             ,               , ] };     // r R    
+    key <AD05> { [ t             , T             ,               , ] };     // t T    
+    key <AD06> { [ y             , Y             ,               , ] };     // y Y    
+    key <AD07> { [ u             , U             ,               , ] };     // u      
+    key <AD08> { [ i             , I             ,               , ] };     // i I    
+    key <AD09> { [ o             , O             ,               , ] };     // o O    
+    key <AD10> { [ p             , P             ,               , ] };     // p P    
+    key <AD11> { [ bracketleft   , braceleft     ,               , ] };     // [ {    
+    key <AD12> { [ bracketright  , braceright    ,               , ] };     // ] }    
+
+    // Third row - ASDF (with CapsLock)
+    // Standard:    a s d f g h j k l ; apostrophe \
+    // Shift:       A S D F G H J K L : " |
+    // AltGr:       
+    // AltGr+Shift: 
+
+    key <AC01> { [ a             , A             ,               , ] };     // a A    
+    key <AC02> { [ s             , S             ,               , ] };     // s S    
+    key <AC03> { [ d             , D             ,               , ] };     // d D    
+    key <AC04> { [ f             , F             ,               , ] };     // f F    
+    key <AC05> { [ g             , G             ,               , ] };     // g G    
+    key <AC06> { [ h             , H             ,               , ] };     // h H    
+    key <AC07> { [ j             , J             ,               , ] };     // j J    
+    key <AC08> { [ k             , K             ,               , ] };     // k K    
+    key <AC09> { [ l             , L             ,               , ] };     // l L    
+    key <AC10> { [ semicolon     , colon         ,               , ] };     // ; :    
+    key <AC11> { [ apostrophe    , quotedbl      ,               , ] };     // apostrophe "    
+    key <BKSL> { [ backslash     , bar           ,               , ] };     // \ |    
+
+    // Fourth row - ZXCV (with Shift)
+    // Standard:    z x c v b n m , . /
+    // Shift:       Z X C V B N M < > ?
+    // AltGr:       
+    // AltGr+Shift: 
+
+    key <AB01> { [ z             , Z             ,               , ] };     // z Z    
+    key <AB02> { [ x             , X             ,               , ] };     // x X    
+    key <AB03> { [ c             , C             ,               , ] };     // c C    
+    key <AB04> { [ v             , V             ,               , ] };     // v V    
+    key <AB05> { [ b             , B             ,               , ] };     // b B    
+    key <AB06> { [ n             , N             ,               , ] };     // n N    
+    key <AB07> { [ m             , M             ,               , ] };     // m M    
+    key <AB08> { [ comma         , less          ,               , ] };     // , <    
+    key <AB09> { [ period        , greater       ,               , ] };     // . >    
+    key <AB10> { [ slash         , question      ,               , ] };     // / ?    
+
+    // Fifth row - Bottom (Ctrl, Win, Alt, Space, AltGr, Menu)
+    // Standard:    
+    // Shift:       
+    // AltGr:       
+    // AltGr+Shift: 
+
+
+    // Arrow keys
+    // Standard:    
+    // Shift:       
+    // AltGr:       
+    // AltGr+Shift: 
+
+
+    // Numpad
+    // Standard:    
+    // Shift:       
+    // AltGr:       
+    // AltGr+Shift: 
+
