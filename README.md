@@ -14,8 +14,6 @@ A professional web-based editor for creating and customizing ISO 105 keyboard la
 |:---:|
 | **🎨 Editor View** |
 | ![Editor](Screens/Emojis.png) |
-| **⌨️ Keyboard Manager** |
-| ![Manager](Screens/main.png) |
 | **📂 Input Sources** |
 | ![Input Sources](Screens/input_sources.png) |
 | **🎹 Phonkeys Layout** |
@@ -23,7 +21,19 @@ A professional web-based editor for creating and customizing ISO 105 keyboard la
 | **😊 Emojis & Symbols** |
 | ![Emojis](Screens/Emojis.png) |
 | **🔣 Symbol Layout** |
-| ![Symbols](Screens/Symbols.png) |
+| ![Select Character](Screens/select_character.png) |
+| **🔣 DEF (Definition) export format** |
+| ![DEF](Screens/DEF.png) |
+| **🔣 HEX (Hexadecimal) export format** |
+| ![DEF](Screens/HEX.png) |
+| **⌨️ Keyboard Manager** |
+| ![Manager](Screens/main.png) |
+| **⌨️ Install menu** |
+| ![Manager](Screens/install.png) |
+| **⌨️ Remove menu** |
+| ![Manager](Screens/remove.png) |
+| **⌨️ Install menu** |
+| ![Manager](Screens/layout_options.png) |
 
 ## ✨ Features
 
