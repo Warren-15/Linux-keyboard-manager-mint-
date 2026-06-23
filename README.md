@@ -20,7 +20,7 @@ A professional web-based editor for creating and customizing ISO 105 keyboard la
 | ![Phonkeys](Screens/phonkeys.png) |
 | **😊 Emojis & Symbols** |
 | ![Emojis](Screens/Emojis.png) |
-| **🔣 Symbol Layout** |
+| **🔣 Select Character** |
 | ![Select Character](Screens/select_character.png) |
 | **🔣 DEF (Definition) export format** |
 | ![DEF](Screens/DEF.png) |
