@@ -21,16 +21,12 @@ create_country_layout() {
     
     echo -e "${CYAN}  Creating country layout: $layout_id ($full_name)${NC}"
     
-    # 1. إنشاء ملف الرموز الأساسي
+    # 1. إنشاء ملف الرموز (فارغ، بدون basic لتجنب التعارض مع المتغيرات)
     local symbols_file="$XKB_SYMBOLS_DIR/$layout_id"
     if [[ ! -f "$symbols_file" ]]; then
         sudo tee "$symbols_file" > /dev/null <<EOF
-// Layout: $full_name ($layout_id)
-default partial alphanumeric_keys
-xkb_symbols "basic" {
-    include "pc(pc105)"
-    name[Group1] = "$full_name"
-};
+// $full_name ($layout_id) - Custom layout
+// Variants will be added by the installer
 EOF
         sudo chmod 644 "$symbols_file"
         echo -e "${GREEN}    ✓ Created symbols file${NC}"
@@ -38,7 +34,7 @@ EOF
         echo -e "${GREEN}    ✓ Symbols file already exists${NC}"
     fi
     
-    # 2. تحضير كتلة XML
+    # 2. تحضير كتلة XML مع countryList و languageList
     local country_list="        <countryList>\n          <iso3166Id>$iso3166</iso3166Id>\n        </countryList>"
     local language_list="        <languageList>\n          <iso639Id>$iso639</iso639Id>\n        </languageList>"
     
@@ -122,9 +118,6 @@ $language_list
                 fi
             fi
             
-            # تم حذف السطر: read -n1 -p "    Press any key to continue..."
-            # تم حذف: echo ""
-            
             # الحقن بعد السطر المحدد
             sudo awk -v line="$target_line" -v block="$(echo -e "$layout_block")" '
             {
@@ -152,7 +145,6 @@ $language_list
     echo -e "${GREEN}  ✓ Layout $layout_id created${NC}"
     return 0
 }
-
 # ============================================================
 # إضافة متغير إلى تخطيط بلد
 # ============================================================
