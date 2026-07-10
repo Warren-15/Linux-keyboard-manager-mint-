@@ -47,15 +47,13 @@ remove_variant() {
         fi
     done
     
-    # Manage input sources desktop state strings
-    local current_sources=$(get_current_input_sources)
-    local source_id="${parent_layout}+${variant_name}"
-    local new_sources=$(echo "$current_sources" | sed "s/, ('xkb', '$source_id')//g; s/('xkb', '$source_id'), //g; s/('xkb', '$source_id')//g")
-    new_sources=$(echo "$new_sources" | sed 's/\[, /\[/g; s/, \]/\]/g')
-    if [[ "$new_sources" != "$current_sources" ]]; then
-        set_input_sources "$new_sources"
-        echo -e "${GREEN}  ✓ Removed from input sources${NC}"
-    fi
+    # ============================================================
+    # حذف من input sources (GSettings)
+    # ============================================================
+    local gsettings_id="${parent_layout}+${variant_name}"
+    remove_from_input_sources "$gsettings_id"
+    
+    echo -e "${GREEN}  ✓ Removal complete${NC}"
 }
 
 remove_standalone_layout() {
@@ -95,16 +93,42 @@ remove_standalone_layout() {
         fi
     done
     
+    # ============================================================
+    # حذف من input sources (GSettings)
+    # ============================================================
+    remove_from_input_sources "$layout_id"
+    
+    echo -e "${GREEN}  ✓ Removal complete${NC}"
+}
+
+# ============================================================
+# دالة مساعدة لحذف تخطيط من input sources
+# ============================================================
+remove_from_input_sources() {
+    local gsettings_id="$1"
+    
     local current_sources=$(get_current_input_sources)
-    local new_sources=$(echo "$current_sources" | sed "s/, ('xkb', '$layout_id')//g; s/('xkb', '$layout_id'), //g; s/('xkb', '$layout_id')//g")
-    new_sources=$(echo "$new_sources" | sed 's/\[, /\[/g; s/, \]/\]/g')
-    if [[ "$new_sources" != "$current_sources" ]]; then
+    debug "Current input sources: $current_sources"
+    
+    # التحقق من وجود التخطيط في القائمة
+    if echo "$current_sources" | grep -Fq "'$gsettings_id'"; then
+        # حذف التخطيط من القائمة
+        local new_sources=$(echo "$current_sources" | sed "s/, ('xkb', '$gsettings_id')//g; s/('xkb', '$gsettings_id'), //g; s/('xkb', '$gsettings_id')//g")
+        new_sources=$(echo "$new_sources" | sed 's/\[, /\[/g; s/, \]/\]/g')
+        
+        # إذا أصبحت القائمة فارغة، نضع تخطيطاً افتراضياً (us)
+        if [[ "$new_sources" == "[]" || -z "$new_sources" ]]; then
+            new_sources="[('xkb', 'us')]"
+            echo -e "${YELLOW}  No layouts left, defaulting to 'us'${NC}"
+        fi
+        
         set_input_sources "$new_sources"
-        echo -e "${GREEN}  ✓ Removed from input sources${NC}"
+        echo -e "${GREEN}  ✓ Removed '$gsettings_id' from input sources${NC}"
+    else
+        debug "Layout '$gsettings_id' not found in input sources"
     fi
 }
 
-# (Keep remove_layouts_menu() structure as provided originally)
 
 remove_layouts_menu() {
     local SEP=$'\x1f'
