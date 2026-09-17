@@ -91,7 +91,7 @@ FLAG="🇹🇳"
     // AltGr:       
     // AltGr+Shift: 
 
-    key <SPCE> { [               , U2015         , U005F         , U25AC ] };//  Greek_horizbar underscore ▬
+    key <SPCE> { [     space          , U2015         , U005F         , U25AC ] };//  Greek_horizbar underscore ▬
 
     // Arrow keys
     // Standard:    ｔ ｑ ｓ
