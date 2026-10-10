@@ -78,10 +78,10 @@ FLAG="🇨🇦"
 
     key <LSGT> { [ less          , greater       , U1F62C        , U1F925 ] };// < > 😬 🤥
     key <AB01> { [ w             , W             , U1F62E        , U1F609 ] };// w W 😮 😉
-    key <AB02> { [ x             , X             , U1F929        , U1F60E ] };// x X 🤩 😎
-    key <AB03> { [ c             , C             , U1F615        , U1F635 ] };// c C 😕 😵
-    key <AB04> { [ v             , V             , U1F92E        , U1F922 ] };// v V 🤮 🤢
-    key <AB05> { [ b             , B             , U1F611        , U1F610 ] };// b B 😑 😐
+    key <AB02> { [ x             , X             , U1F929        , U1F635 ] };// x X 🤩 😵
+    key <AB03> { [ c             , C             , U1F615        , U1F60E ] };// c C 😕 😎
+    key <AB04> { [ v             , V             , U1F611        , U1F610 ] };// v V 😑 😐
+    key <AB05> { [ b             , B             , U1F92E        , U1F922 ] };// b B 🤮 🤢
     key <AB06> { [ n             , N             , U1F632        , U1F92D ] };// n N 😲 🤭
     key <AB07> { [ comma         , question      , U1F633        , U1F636 ] };// , ? 😳 😶   <-- FLUSHED PRIORITY!
     key <AB08> { [ semicolon     , period        , U1F60C        , U1F60A ] };// ; . 😌 😊
@@ -117,4 +117,3 @@ FLAG="🇨🇦"
     key <KP2> { [ 2             , U2161         , U2171         , U2777 ] };// 2 Ⅱ ⅱ ❷
     key <KP3> { [ 3             , U2162         , U2172         , U2778 ] };// 3 Ⅲ ⅲ ❸
     key <KP0> { [ 0             , U2169         , U2179         , U277F ] };// 0 Ⅹ ⅹ ❿
-
