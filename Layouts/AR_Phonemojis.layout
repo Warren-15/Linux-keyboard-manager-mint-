@@ -78,10 +78,10 @@ FLAG="🇹🇳"
 
     key <LSGT> { [ less          , greater       , U1F62C        , U1F925 ] };// < > 😬 🤥
     key <AB01> { [ Arabic_waw    , Arabic_hamzaonwaw, U1F62E        , U1F609 ] };// و ؤ 😮 😉
-    key <AB02> { [ Arabic_sheen  , Arabic_shadda , U1F929        , U1F60E ] };// ش ّ 🤩 😎
-    key <AB03> { [ Arabic_theh   , Arabic_theh   , U1F615        , U1F635 ] };// ث ث 😕 😵
-    key <AB04> { [ Arabic_thal   , Arabic_peh    , U1F92E        , U1F922 ] };// ذ پ 🤮 🤢
-    key <AB05> { [ Arabic_beh    , Arabic_beh    , U1F611        , U1F610 ] };// ب ب 😑 😐
+    key <AB02> { [ Arabic_sheen  , Arabic_shadda , U1F929        , U1F635 ] };// ش ّ 🤩 😵
+    key <AB03> { [ Arabic_theh   , Arabic_theh   , U1F615        , U1F60E ] };// ث ث 😕 😎
+    key <AB04> { [ Arabic_thal   , Arabic_peh    , U1F611        , U1F610 ] };// ذ پ 😑 😐
+    key <AB05> { [ Arabic_beh    , Arabic_beh    , U1F92E        , U1F922 ] };// ب ب 🤮 🤢
     key <AB06> { [ Arabic_noon   , N             , U1F632        , U1F92D ] };// ن N 😲 🤭
     key <AB07> { [ Arabic_comma  , Arabic_question_mark, U1F633        , U1F636 ] };// ، ؟ 😳 😶   <-- FLUSHED PRIORITY!
     key <AB08> { [ semicolon     , period        , U1F60C        , U1F60A ] };// ; . 😌 😊
@@ -117,4 +117,3 @@ FLAG="🇹🇳"
     key <KP2> { [ 2             , U2161         , U0662         , U2777 ] };// 2 Ⅱ ٢ ❷
     key <KP3> { [ 3             , U2162         , U0663         , U2778 ] };// 3 Ⅲ ٣ ❸
     key <KP0> { [ 0             , U2169         , U0660         , U277F ] };// 0 Ⅹ ٠ ❿
-
